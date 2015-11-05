@@ -26,6 +26,7 @@ import javax.swing.JPanel;
  */
 public class DrawPanel extends JPanel {
     private final ArrayList<MyShape> shapes;
+    private final ArrayList<MyShape> redoShapes;
     private int shapeType;
     private MyShape currentShape;
     private Paint currentColor;
@@ -37,6 +38,7 @@ public class DrawPanel extends JPanel {
         this.statusLabel = statusLabel;
 //        ArrayList so that there is no limit on the number of shapes
         shapes = new ArrayList<>();
+        redoShapes = new ArrayList<>();
         this.shapeType = 0;
         this.currentShape = null;
         this.currentColor = Color.BLACK;
@@ -97,22 +99,42 @@ public class DrawPanel extends JPanel {
     
     /**
      * Lowers the numbers of shapes in the shapeCount
-     * and removes the last shape
+     * and removes the last shape and adds it into
+     * the redoShape
      * repaints the panel
      */
     public void clearLastShape() {
         if (!shapes.isEmpty()) {
-            shapes.remove(shapes.size() - 1);
+            MyShape shape = shapes.remove(shapes.size() - 1);
+            redoShapes.add(shape);
+        }
+        repaint();
+    }
+    
+    /**
+     * It removes the last inputted shape into the Array List so that
+     * the shape will be displayed back onto the shape
+     */
+    public void redoLastShape() {
+        if (!redoShapes.isEmpty()) {
+            MyShape shape = redoShapes.remove(redoShapes.size() - 1);
+            shapes.add(shape);
         }
         repaint();
     }
     
     /**
      * Sets the shape count to be 0 and clears the shapes array
+     * by removing it from the front first
      * repaints the panel
      */
     public void clearDrawing() {
-        shapes.clear();
+        while (!shapes.isEmpty()) {
+//            It removes from the front because it gets the last shape
+//            must be the first to be displayed back first
+            MyShape shape = shapes.remove(0);
+            redoShapes.add(shape);
+        }
         repaint();
     }
     

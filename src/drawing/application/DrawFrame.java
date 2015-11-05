@@ -43,6 +43,7 @@ public class DrawFrame extends JFrame {
 
     private final JCheckBox gradient;
     private final JButton firstColor;
+    private final JButton swapColors;
     private final JButton secondColor;
     private final JLabel strokeWidthLabel;
     private final JTextField strokeWidth;
@@ -90,6 +91,8 @@ public class DrawFrame extends JFrame {
         firstColor = new JButton();
         firstColor.setBackground(color1);
         firstColor.addActionListener(new FirstColorHandler());
+        swapColors = new JButton("<>");
+        swapColors.addActionListener(new SwapColorHandler());
         secondColor = new JButton();
         secondColor.setBackground(color2);
         secondColor.addActionListener(new SecondColorHandler());
@@ -126,6 +129,7 @@ public class DrawFrame extends JFrame {
         bottom.setLayout(new FlowLayout());
         bottom.add(gradient);
         bottom.add(firstColor);
+        bottom.add(swapColors);
         bottom.add(secondColor);
         bottom.add(strokeWidthLabel);
         bottom.add(strokeWidth);
@@ -326,6 +330,19 @@ public class DrawFrame extends JFrame {
 
         }
 
+    }
+    
+    private class SwapColorHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Color temp = color1;
+            color1 = color2;
+            color2 = temp;
+            firstColor.setBackground(color1);
+            secondColor.setBackground(color2);
+        }
+        
     }
 
     private class SecondColorHandler implements ActionListener {

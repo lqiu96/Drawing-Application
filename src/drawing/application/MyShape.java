@@ -100,7 +100,7 @@ public abstract class MyShape {
     /**
      * Abstract draw method which each non-abstract shape class
      * must determine how to draw and display on the panel
-     * @param g 
+     * @param g Graphics2D object
      */
     public abstract void draw(Graphics2D g);
 }
