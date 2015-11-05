@@ -25,20 +25,18 @@ import javax.swing.JPanel;
  * @author Lawrence
  */
 public class DrawPanel extends JPanel {
-    private ArrayList<MyShape> shapes;
-    private int shapeCount;
+    private final ArrayList<MyShape> shapes;
     private int shapeType;
     private MyShape currentShape;
     private Paint currentColor;
     private boolean filledShape;
-    private JLabel statusLabel;
+    private final JLabel statusLabel;
     private Stroke currentStroke;
     
     public DrawPanel(JLabel statusLabel) {
         this.statusLabel = statusLabel;
-        //ArrayList so that there is no limit on the number of shapes
+//        ArrayList so that there is no limit on the number of shapes
         shapes = new ArrayList<>();
-        this.shapeCount = 0;
         this.shapeType = 0;
         this.currentShape = null;
         this.currentColor = Color.BLACK;
@@ -57,7 +55,7 @@ public class DrawPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        for (int i = 0; i < shapeCount; i++) {
+        for (int i = 0; i < shapes.size(); i++) {
             shapes.get(i).draw((Graphics2D) g);
         }
         if (currentShape != null) {
@@ -66,8 +64,8 @@ public class DrawPanel extends JPanel {
     }
 
     /**
-     * Sets the shapetype
-     * @param shapeType int value of the shape type
+     * Sets the Shape type
+     * @param shapeType integer value of the shape type
      */
     public void setShapeType(int shapeType) {
         this.shapeType = shapeType;
@@ -103,8 +101,7 @@ public class DrawPanel extends JPanel {
      * repaints the panel
      */
     public void clearLastShape() {
-        if (shapeCount > 0) {
-            shapeCount--;
+        if (!shapes.isEmpty()) {
             shapes.remove(shapes.size() - 1);
         }
         repaint();
@@ -115,7 +112,6 @@ public class DrawPanel extends JPanel {
      * repaints the panel
      */
     public void clearDrawing() {
-        shapeCount = 0;
         shapes.clear();
         repaint();
     }
@@ -158,7 +154,6 @@ public class DrawPanel extends JPanel {
         @Override
         public void mouseReleased(MouseEvent e) {
             shapes.add(currentShape);
-            shapeCount++;
             currentShape = null;
             repaint();
         }
