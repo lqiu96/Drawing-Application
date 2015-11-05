@@ -57,9 +57,9 @@ public class DrawFrame extends JFrame {
     private int dashWidth;
     private boolean isDashed;
 
-    //Just choose a couple of the default colors -- Can add more
-    private final String[] colorOptions = {"Black", "Red", "Green", "Blue",
-        "Orange", "Yellow"};
+    private final String[] colorOptions = {"Black", "Blue", "Cyan", "Dark Gray",
+        "Gray", "Green", "Light Gray", "Magenta", "Orange", "Pink", "Red",
+        "White", "Yellow"};
     private final String[] shapeOptions = {"Line", "Oval", "Rectangle"};
 
     public DrawFrame() {
@@ -171,18 +171,39 @@ public class DrawFrame extends JFrame {
                         panel.setCurrentColor(Color.BLACK);
                         break;
                     case 1:
-                        panel.setCurrentColor(Color.RED);
-                        break;
-                    case 2:
-                        panel.setCurrentColor(Color.GREEN);
-                        break;
-                    case 3:
                         panel.setCurrentColor(Color.BLUE);
                         break;
+                    case 2:
+                        panel.setCurrentColor(Color.CYAN);
+                        break;
+                    case 3:
+                        panel.setCurrentColor(Color.DARK_GRAY);
+                        break;
                     case 4:
-                        panel.setCurrentColor(Color.ORANGE);
+                        panel.setCurrentColor(Color.GRAY);
                         break;
                     case 5:
+                        panel.setCurrentColor(Color.GREEN);
+                        break;
+                    case 6:
+                        panel.setCurrentColor(Color.LIGHT_GRAY);
+                        break;
+                    case 7:
+                        panel.setCurrentColor(Color.MAGENTA);
+                        break;
+                    case 8:
+                        panel.setCurrentColor(Color.ORANGE);
+                        break;
+                    case 9:
+                        panel.setCurrentColor(Color.PINK);
+                        break;
+                    case 10:
+                        panel.setCurrentColor(Color.RED);
+                        break;
+                    case 11:
+                        panel.setCurrentColor(Color.WHITE);
+                        break;
+                    default:    //Last option is yellow
                         panel.setCurrentColor(Color.YELLOW);
                         break;
                 }
