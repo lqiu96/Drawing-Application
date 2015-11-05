@@ -32,7 +32,6 @@ import javax.swing.event.DocumentListener;
  * @author Lawrence
  */
 public class DrawFrame extends JFrame {
-
     private final JButton undo;
     private final JButton clear;
     private final JComboBox<String> colors;
@@ -51,6 +50,7 @@ public class DrawFrame extends JFrame {
     private final JCheckBox dashed;
 
     private boolean isGradient;
+    private Color currentColor;
     private Color color1;
     private Color color2;
     private int lineWidth;
@@ -64,6 +64,7 @@ public class DrawFrame extends JFrame {
 
     public DrawFrame() {
         isGradient = false;
+        currentColor = Color.BLACK;
         color1 = Color.BLACK;
         color2 = Color.BLACK;
         lineWidth = 1;
@@ -168,42 +169,55 @@ public class DrawFrame extends JFrame {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 switch (colors.getSelectedIndex()) {
                     case 0:
+                        currentColor = Color.BLACK;
                         panel.setCurrentColor(Color.BLACK);
                         break;
                     case 1:
+                        currentColor = Color.BLUE;
                         panel.setCurrentColor(Color.BLUE);
                         break;
                     case 2:
+                        currentColor = Color.CYAN;
                         panel.setCurrentColor(Color.CYAN);
                         break;
                     case 3:
+                        currentColor = Color.DARK_GRAY;
                         panel.setCurrentColor(Color.DARK_GRAY);
                         break;
                     case 4:
+                        currentColor = Color.GRAY;
                         panel.setCurrentColor(Color.GRAY);
                         break;
                     case 5:
+                        currentColor = Color.GREEN;
                         panel.setCurrentColor(Color.GREEN);
                         break;
                     case 6:
+                        currentColor = Color.LIGHT_GRAY;
                         panel.setCurrentColor(Color.LIGHT_GRAY);
                         break;
                     case 7:
+                        currentColor = Color.MAGENTA;
                         panel.setCurrentColor(Color.MAGENTA);
                         break;
                     case 8:
+                        currentColor = Color.ORANGE;
                         panel.setCurrentColor(Color.ORANGE);
                         break;
                     case 9:
+                        currentColor = Color.PINK;
                         panel.setCurrentColor(Color.PINK);
                         break;
                     case 10:
+                        currentColor = Color.RED;
                         panel.setCurrentColor(Color.RED);
                         break;
                     case 11:
+                        currentColor = Color.WHITE;
                         panel.setCurrentColor(Color.WHITE);
                         break;
                     default:    //Last option is yellow
+                        currentColor = Color.YELLOW;
                         panel.setCurrentColor(Color.YELLOW);
                         break;
                 }
@@ -280,10 +294,15 @@ public class DrawFrame extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     color1 = colorChooser.getColor();
+//                    Checked here so when new color is selected, gradient is updated
+                    if (isGradient) {
+                        panel.setCurrentColor(new GradientPaint(0, 0, color1, 50, 50, color2, true));
+                    } else {
+                        panel.setCurrentColor(currentColor);
+                    }
                 }
             }, null).setVisible(true);
-            isGradient = !isGradient;
-            gradient.doClick();
+
         }
 
     }
@@ -304,10 +323,14 @@ public class DrawFrame extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     color2 = colorChooser.getColor();
+//                    Checks here so that when a new color is selected the gradient is updated
+                    if (isGradient) {
+                        panel.setCurrentColor(new GradientPaint(0, 0, color1, 50, 50, color2, true));
+                    } else {
+                        panel.setCurrentColor(currentColor);
+                    }
                 }
             }, null).setVisible(true);
-            isGradient = !isGradient;
-            gradient.doClick();
         }
 
     }
