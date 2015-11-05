@@ -26,12 +26,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 /**
- * Displays the panel which allows the user to choose
- * options from button and the panel to draw on
- * 
+ * Displays the panel which allows the user to choose options from button and
+ * the panel to draw on
+ *
  * @author Lawrence
  */
 public class DrawFrame extends JFrame {
+
     private final JButton undo;
     private final JButton clear;
     private final JComboBox<String> colors;
@@ -39,7 +40,7 @@ public class DrawFrame extends JFrame {
     private final JCheckBox filled;
     private final JLabel statusLabel;
     private final DrawPanel panel;
-    
+
     private final JCheckBox gradient;
     private final JButton firstColor;
     private final JButton secondColor;
@@ -48,19 +49,19 @@ public class DrawFrame extends JFrame {
     private final JLabel strokeDashLengthLabel;
     private final JTextField strokeDashLength;
     private final JCheckBox dashed;
-    
+
     private boolean isGradient;
     private Color color1;
     private Color color2;
     private int lineWidth;
     private int dashWidth;
     private boolean isDashed;
-    
+
     //Just choose a couple of the default colors -- Can add more
     private final String[] colorOptions = {"Black", "Red", "Green", "Blue",
         "Orange", "Yellow"};
     private final String[] shapeOptions = {"Line", "Oval", "Rectangle"};
-    
+
     public DrawFrame() {
         isGradient = false;
         color1 = Color.BLACK;
@@ -68,130 +69,42 @@ public class DrawFrame extends JFrame {
         lineWidth = 1;
         dashWidth = 0;
         isDashed = false;
-        
+
         undo = new JButton("Undo");
-        UndoHandler undoListener = new UndoHandler();
-        undo.addActionListener(undoListener);
+        undo.addActionListener(new UndoHandler());
         clear = new JButton("Clear");
-        ClearHandler clearListener = new ClearHandler();
-        clear.addActionListener(clearListener);
+        clear.addActionListener(new ClearHandler());
         colors = new JComboBox(colorOptions);
-        ColorHandler colorListener = new ColorHandler();
-        colors.addItemListener(colorListener);
+        colors.addItemListener(new ColorHandler());
         shapes = new JComboBox(shapeOptions);
-        ShapeHandler shapeListener = new ShapeHandler();
-        shapes.addItemListener(shapeListener);
-        FilledHandler filledListener = new FilledHandler();
+        shapes.addItemListener(new ShapeHandler());
         filled = new JCheckBox("Filled");
-        filled.addActionListener(filledListener);
-        
+        filled.addActionListener(new FilledHandler());
+
         gradient = new JCheckBox("Use Gradient");
-        GradientHandler gradientListener = new GradientHandler();
-        gradient.addActionListener(gradientListener);
-        FirstColorHandler firstColorListener = new FirstColorHandler();
+        gradient.addActionListener(new GradientHandler());
         firstColor = new JButton("1st Color...");
-        firstColor.addActionListener(firstColorListener);
-        SecondColorHandler secondColorListener = new SecondColorHandler();
+        firstColor.addActionListener(new FirstColorHandler());
         secondColor = new JButton("2nd Color...");
-        secondColor.addActionListener(secondColorListener);
+        secondColor.addActionListener(new SecondColorHandler());
         strokeWidthLabel = new JLabel("Line Width:");
         strokeWidth = new JTextField("", 3);
         //Create a new document listener because an action listener
         //would require the user to press enter to register
-        strokeWidth.getDocument().addDocumentListener(new DocumentListener() {
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                try {
-                    lineWidth = Integer.parseInt(strokeWidth.getText());
-                } catch (NumberFormatException ex) {
-                    lineWidth = 1;
-                }
-                if (isDashed) {
-                    float[] dashes = {dashWidth};
-                    panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                    BasicStroke.JOIN_ROUND, 10, dashes, 0));  
-                } else {
-                    panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));       
-                }
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                try {
-                    lineWidth = Integer.parseInt(strokeWidth.getText());
-                } catch (NumberFormatException ex) {
-                    lineWidth = 1;
-                }
-                if (isDashed) {
-                    float[] dashes = {dashWidth};
-                    panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                    BasicStroke.JOIN_ROUND, 10, dashes, 0));  
-                } else {
-                    panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));       
-                }            
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                try {
-                    lineWidth = Integer.parseInt(strokeWidth.getText());
-                } catch (NumberFormatException ex) {
-                    lineWidth = 1;
-                }
-                if (isDashed) {
-                    float[] dashes = {dashWidth};
-                    panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                    BasicStroke.JOIN_ROUND, 10, dashes, 0));  
-                } else {
-                    panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));       
-                }            
-            }
-            
-        });
+        strokeWidth.getDocument().addDocumentListener(new StrokeWidthHandler());
         strokeDashLengthLabel = new JLabel("Dash Length:");
         strokeDashLength = new JTextField("", 3);
         //Create a new document listener because an action listener
         //would require the user to press enter to register
-        strokeDashLength.getDocument().addDocumentListener(new DocumentListener(){
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                try {
-                    dashWidth = Integer.parseInt(strokeDashLength.getText());
-                } catch (NumberFormatException ex) {
-                    dashWidth = 1;
-                }
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                try {
-                    dashWidth = Integer.parseInt(strokeDashLength.getText());
-                } catch (NumberFormatException ex) {
-                    dashWidth = 1;
-                }
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                try {
-                    dashWidth = Integer.parseInt(strokeDashLength.getText());
-                } catch (NumberFormatException ex) {
-                    dashWidth = 1;
-                }
-            }
-            
-        });
-        DashedHandler dashListener = new DashedHandler();
+        strokeDashLength.getDocument().addDocumentListener(new StrokeDashLengthHandler());
         dashed = new JCheckBox("Dashed");
-        dashed.addActionListener(dashListener);
-        
+        dashed.addActionListener(new DashedHandler());
+
         statusLabel = new JLabel();
         panel = new DrawPanel(statusLabel);
-        
+
         setLayout(new BorderLayout());
-        
+
         JPanel topOptions = new JPanel();
         topOptions.setLayout(new BorderLayout());
         JPanel top = new JPanel();
@@ -213,39 +126,41 @@ public class DrawFrame extends JFrame {
         bottom.add(strokeDashLength);
         bottom.add(dashed);
         topOptions.add(bottom, BorderLayout.SOUTH);
-        
+
         add(topOptions, BorderLayout.NORTH);
-        add(panel, BorderLayout.CENTER);        
+        add(panel, BorderLayout.CENTER);
         add(statusLabel, BorderLayout.SOUTH);
     }
-    
+
     private class UndoHandler implements ActionListener {
 
         /**
          * When clicked, it will call the panel to clear the last shape
+         *
          * @param e ActionEvent
          */
         @Override
         public void actionPerformed(ActionEvent e) {
             panel.clearLastShape();
         }
-        
+
     }
-    
+
     private class ClearHandler implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             panel.clearDrawing();
         }
-        
+
     }
-    
+
     private class ColorHandler implements ItemListener {
 
         /**
-         * Gets the color selected from the default options
-         * and sets the panel default colors to be that
+         * Gets the color selected from the default options and sets the panel
+         * default colors to be that
+         *
          * @param e ItemEvent
          */
         @Override
@@ -273,14 +188,15 @@ public class DrawFrame extends JFrame {
                 }
             }
         }
-        
+
     }
-    
+
     private class ShapeHandler implements ItemListener {
 
         /**
-         * If an option is selected, it gets the option and
-         * sets it to be the shape selected
+         * If an option is selected, it gets the option and sets it to be the
+         * shape selected
+         *
          * @param e ItemEvent
          */
         @Override
@@ -289,30 +205,31 @@ public class DrawFrame extends JFrame {
                 panel.setShapeType(shapes.getSelectedIndex());
             }
         }
-        
+
     }
-    
+
     private class FilledHandler implements ActionListener {
 
         /**
-         * When clicked, it will set it so the panel current 
-         * shape is filled
+         * When clicked, it will set it so the panel current shape is filled
+         *
          * @param e ActionEvent
          */
         @Override
         public void actionPerformed(ActionEvent e) {
             panel.setFilledShape(filled.isSelected());
         }
-        
+
     }
-    
+
     private class GradientHandler implements ActionListener {
 
         /**
-         * It reverses the gradient option selected
-         * If selected, it will create a gradient with the two colors selected
-         * If not, it will just set the color to be the first color selected
-         * @param e 
+         * It reverses the gradient option selected If selected, it will create
+         * a gradient with the two colors selected If not, it will just set the
+         * color to be the first color selected
+         *
+         * @param e
          */
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -323,21 +240,22 @@ public class DrawFrame extends JFrame {
                 panel.setCurrentColor(color1);
             }
         }
-        
+
     }
-    
+
     private class FirstColorHandler implements ActionListener {
-        
+
         /**
-         * Displays a JColorChooser which allows the user to selected
-         * from a bunch of colors.
+         * Displays a JColorChooser which allows the user to selected from a
+         * bunch of colors.
+         *
          * @param e ActionEvent
          */
         @Override
         public void actionPerformed(ActionEvent e) {
             JColorChooser colorChooser = new JColorChooser();
             JColorChooser.createDialog(null, "Choose Color", true, colorChooser, new ActionListener() {
-                
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     color1 = colorChooser.getColor();
@@ -346,21 +264,22 @@ public class DrawFrame extends JFrame {
             isGradient = !isGradient;
             gradient.doClick();
         }
-        
+
     }
-    
+
     private class SecondColorHandler implements ActionListener {
 
         /**
-         * Displays another JColorChooser in which sets the second color
-         * to be the color selected
+         * Displays another JColorChooser in which sets the second color to be
+         * the color selected
+         *
          * @param e ActionEvent
          */
         @Override
         public void actionPerformed(ActionEvent e) {
             JColorChooser colorChooser = new JColorChooser();
             JColorChooser.createDialog(null, "Choose Color", true, colorChooser, new ActionListener() {
-                
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     color2 = colorChooser.getColor();
@@ -369,15 +288,133 @@ public class DrawFrame extends JFrame {
             isGradient = !isGradient;
             gradient.doClick();
         }
-        
+
     }
-    
+
+    private class StrokeWidthHandler implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            try {
+                lineWidth = Integer.parseInt(strokeWidth.getText());
+            } catch (NumberFormatException ex) {
+                lineWidth = 1;
+            }
+            if (isDashed) {
+                float[] dashes = {dashWidth};
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND, 10, dashes, 0));
+            } else {
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            }
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            try {
+                lineWidth = Integer.parseInt(strokeWidth.getText());
+            } catch (NumberFormatException ex) {
+                lineWidth = 1;
+            }
+            if (isDashed) {
+                float[] dashes = {dashWidth};
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND, 10, dashes, 0));
+            } else {
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            }
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            try {
+                lineWidth = Integer.parseInt(strokeWidth.getText());
+            } catch (NumberFormatException ex) {
+                lineWidth = 1;
+            }
+            if (isDashed) {
+                float[] dashes = {dashWidth};
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND, 10, dashes, 0));
+            } else {
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            }
+        }
+    }
+
+    private class StrokeDashLengthHandler implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            try {
+                dashWidth = Integer.parseInt(strokeDashLength.getText());
+            } catch (NumberFormatException ex) {
+                dashWidth = 1;
+            }
+            if (isDashed) {
+                if (dashWidth <= 0) {
+                    dashWidth = 1;
+                    strokeDashLength.setText("1");
+                }
+                float[] dashes = {dashWidth};
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND, 10, dashes, 0));
+            } else {
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND));
+            }
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            try {
+                dashWidth = Integer.parseInt(strokeDashLength.getText());
+            } catch (NumberFormatException ex) {
+                dashWidth = 1;
+            }
+            if (isDashed) {
+                if (dashWidth <= 0) {
+                    dashWidth = 1;
+                    strokeDashLength.setText("1");
+                }
+                float[] dashes = {dashWidth};
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND, 10, dashes, 0));
+            } else {
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND));
+            }
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            try {
+                dashWidth = Integer.parseInt(strokeDashLength.getText());
+            } catch (NumberFormatException ex) {
+                dashWidth = 1;
+            }
+            if (isDashed) {
+                if (dashWidth <= 0) {
+                    dashWidth = 1;
+                    strokeDashLength.setText("1");
+                }
+                float[] dashes = {dashWidth};
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND, 10, dashes, 0));
+            } else {
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND));
+            }
+        }
+    }
+
     private class DashedHandler implements ActionListener {
 
         /**
-         * When selected, it reverses the dashed setting.
-         * It checks to make sure that the user has inputted a correct value
-         * (greater than 0) and creates a stroke such that it creates gaps as dashes
+         * When selected, it reverses the dashed setting. It checks to make sure
+         * that the user has inputted a correct value (greater than 0) and
+         * creates a stroke such that it creates gaps as dashes
+         *
          * @param e ActionEvent
          */
         @Override
@@ -390,12 +427,12 @@ public class DrawFrame extends JFrame {
                 }
                 float[] dashes = {dashWidth};
                 panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                    BasicStroke.JOIN_ROUND, 10, dashes, 0));                
+                        BasicStroke.JOIN_ROUND, 10, dashes, 0));
             } else {
                 panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND));            
+                        BasicStroke.JOIN_ROUND));
             }
         }
-        
+
     }
 }
