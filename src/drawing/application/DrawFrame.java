@@ -33,6 +33,7 @@ import javax.swing.event.DocumentListener;
  */
 public class DrawFrame extends JFrame {
     private final JButton undo;
+    private final JButton redo;
     private final JButton clear;
     private final JComboBox<String> colors;
     private final JComboBox<String> shapes;
@@ -73,6 +74,8 @@ public class DrawFrame extends JFrame {
 
         undo = new JButton("Undo");
         undo.addActionListener(new UndoHandler());
+        redo = new JButton("Redo");
+        redo.addActionListener(new RedoHandler());
         clear = new JButton("Clear");
         clear.addActionListener(new ClearHandler());
         colors = new JComboBox(colorOptions);
@@ -84,9 +87,11 @@ public class DrawFrame extends JFrame {
 
         gradient = new JCheckBox("Use Gradient");
         gradient.addActionListener(new GradientHandler());
-        firstColor = new JButton("1st Color...");
+        firstColor = new JButton();
+        firstColor.setBackground(color1);
         firstColor.addActionListener(new FirstColorHandler());
-        secondColor = new JButton("2nd Color...");
+        secondColor = new JButton();
+        secondColor.setBackground(color2);
         secondColor.addActionListener(new SecondColorHandler());
         strokeWidthLabel = new JLabel("Line Width:");
         strokeWidth = new JTextField("", 3);
@@ -111,6 +116,7 @@ public class DrawFrame extends JFrame {
         JPanel top = new JPanel();
         top.setLayout(new FlowLayout());
         top.add(undo);
+        top.add(redo);
         top.add(clear);
         top.add(colors);
         top.add(shapes);
@@ -145,6 +151,20 @@ public class DrawFrame extends JFrame {
             panel.clearLastShape();
         }
 
+    }
+    
+    private class RedoHandler implements ActionListener {
+
+        /**
+         * When clicked, it will redo the last shaped removed
+         * 
+         * @param e ActionEvent 
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            panel.redoLastShape();
+        }
+        
     }
 
     private class ClearHandler implements ActionListener {
@@ -294,9 +314,10 @@ public class DrawFrame extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     color1 = colorChooser.getColor();
-//                    Checked here so when new color is selected, gradient is updated
-                    if (isGradient) {
-                        panel.setCurrentColor(new GradientPaint(0, 0, color1, 50, 50, color2, true));
+                    firstColor.setBackground(color1);
+                    if (isGradient) {   //Checks to make sure new color updates gradient
+                        panel.setCurrentColor(new GradientPaint(0, 0, color1, 
+                                50, 50, color2, true));
                     } else {
                         panel.setCurrentColor(currentColor);
                     }
@@ -318,14 +339,16 @@ public class DrawFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             JColorChooser colorChooser = new JColorChooser();
-            JColorChooser.createDialog(null, "Choose Color", true, colorChooser, new ActionListener() {
+            JColorChooser.createDialog(null, "Choose Color", true, colorChooser,
+                    new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     color2 = colorChooser.getColor();
-//                    Checks here so that when a new color is selected the gradient is updated
-                    if (isGradient) {
-                        panel.setCurrentColor(new GradientPaint(0, 0, color1, 50, 50, color2, true));
+                    secondColor.setBackground(color2);
+                    if (isGradient) {   //Checks so new color changes the gradient
+                        panel.setCurrentColor(new GradientPaint(0, 0, color1, 
+                                50, 50, color2, true));
                     } else {
                         panel.setCurrentColor(currentColor);
                     }
@@ -349,7 +372,8 @@ public class DrawFrame extends JFrame {
                 panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
                         BasicStroke.JOIN_ROUND, 10, dashes, 0));
             } else {
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND));
             }
         }
 
@@ -365,7 +389,8 @@ public class DrawFrame extends JFrame {
                 panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
                         BasicStroke.JOIN_ROUND, 10, dashes, 0));
             } else {
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND));
             }
         }
 
@@ -381,7 +406,8 @@ public class DrawFrame extends JFrame {
                 panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
                         BasicStroke.JOIN_ROUND, 10, dashes, 0));
             } else {
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND));
             }
         }
     }
