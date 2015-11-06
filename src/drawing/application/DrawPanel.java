@@ -25,6 +25,7 @@ import javax.swing.JPanel;
  * @author Lawrence
  */
 public class DrawPanel extends JPanel {
+    //TODO: Make sure that you can change the size on freeform
     private final ArrayList<MyShape> shapes;
     private final ArrayList<MyShape> redoShapes;
     private int shapeType;
@@ -56,10 +57,14 @@ public class DrawPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        for (int i = 0; i < shapes.size(); i++) {
-            shapes.get(i).draw((Graphics2D) g);
-        }
-        if (currentShape != null) {
+        //Utilize Java8 streams
+        shapes.stream().forEach((shape) -> {
+            shape.draw((Graphics2D) g);
+        });
+        //Makes sure that in freeform shapeType of 0,
+        //The current shape is not drawn because it is
+        //an oval from (0,0) to where you press
+        if (currentShape != null && shapeType != 0) {
             currentShape.draw((Graphics2D) g);
         }
     }
@@ -150,13 +155,16 @@ public class DrawPanel extends JPanel {
         public void mousePressed(MouseEvent e) {
             switch (shapeType) {
                 case 0:
+                    currentShape = new MyOval();
+                    return;
+                case 1:
                     currentShape = new MyLine();
                     break;
-                case 1:
+                case 2:
                     currentShape = new MyOval();
                     ((MyBoundedShape) currentShape).setIsFilled(filledShape);
                     break;
-                case 2:
+                case 3:
                     currentShape = new MyRectangle();
                     ((MyBoundedShape) currentShape).setIsFilled(filledShape);
                     break;
@@ -174,7 +182,9 @@ public class DrawPanel extends JPanel {
          */
         @Override
         public void mouseReleased(MouseEvent e) {
-            shapes.add(currentShape);
+            if (shapeType != 0) {
+                shapes.add(currentShape);
+            }
             currentShape = null;
             repaint();
         }
@@ -197,7 +207,13 @@ public class DrawPanel extends JPanel {
          */
         @Override
         public void mouseDragged(MouseEvent e) {
-            currentShape.setEnd(new Point(e.getX(), e.getY()));
+            if (shapeType == 0) {
+                shapes.add(new MyOval(new Point(e.getX(), e.getY()),
+                        new Point(e.getX() + 5, e.getY() + 5),
+                        (Color) currentColor, currentStroke, true));
+            } else {
+                currentShape.setEnd(new Point(e.getX(), e.getY()));
+            }
             statusLabel.setText("(" + e.getX() + ", " + e.getY() + ")");
             repaint();
         }

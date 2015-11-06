@@ -21,6 +21,7 @@ public class DrawingApplication {
     public static void main(String[] args) {
         // TODO code application logic here
         DrawFrame frame = new DrawFrame();
+        frame.setTitle("Drawing Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setVisible(true);
