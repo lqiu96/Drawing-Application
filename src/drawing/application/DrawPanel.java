@@ -36,8 +36,7 @@ public class DrawPanel extends JPanel {
     
     public DrawPanel(JLabel statusLabel) {
         this.statusLabel = statusLabel;
-//        ArrayList so that there is no limit on the number of shapes
-        shapes = new ArrayList<>();
+        shapes = new ArrayList<>(); //No limit on the number of the shapes
         redoShapes = new ArrayList<>();
         this.shapeType = 0;
         this.currentShape = null;

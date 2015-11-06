@@ -384,6 +384,9 @@ public class DrawFrame extends JFrame {
             } catch (NumberFormatException ex) {
                 lineWidth = 1;
             }
+            if (lineWidth < 1) {
+                lineWidth = 1;
+            }
             if (isDashed) {
                 float[] dashes = {dashWidth};
                 panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
@@ -401,6 +404,9 @@ public class DrawFrame extends JFrame {
             } catch (NumberFormatException ex) {
                 lineWidth = 1;
             }
+            if (lineWidth < 1) {
+                lineWidth = 1;
+            }
             if (isDashed) {
                 float[] dashes = {dashWidth};
                 panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
@@ -416,6 +422,9 @@ public class DrawFrame extends JFrame {
             try {
                 lineWidth = Integer.parseInt(strokeWidth.getText());
             } catch (NumberFormatException ex) {
+                lineWidth = 1;
+            }
+            if (lineWidth < 1) {
                 lineWidth = 1;
             }
             if (isDashed) {
