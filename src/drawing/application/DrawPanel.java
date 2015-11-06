@@ -208,8 +208,12 @@ public class DrawPanel extends JPanel {
         @Override
         public void mouseDragged(MouseEvent e) {
             if (shapeType == 0) {
-                shapes.add(new MyOval(new Point(e.getX(), e.getY()),
-                        new Point(e.getX() + 5, e.getY() + 5),
+                int width = (int) ((BasicStroke) currentStroke).getLineWidth();
+                if (width < 5) {
+                    width = 5;
+                }
+                shapes.add(new MyOval(new Point(e.getX() - width / 2, e.getY() - width / 2), 
+                        new Point(e.getX() + width / 2, e.getY() + width / 2),
                         (Color) currentColor, currentStroke, true));
             } else {
                 currentShape.setEnd(new Point(e.getX(), e.getY()));

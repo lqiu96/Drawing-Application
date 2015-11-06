@@ -53,8 +53,8 @@ public class DrawFrame extends JFrame {
 
     private boolean isGradient;
     private Color currentColor;
-    private Color color1;
-    private Color color2;
+    private Color gradientColor1;
+    private Color gradientColor2;
     private int lineWidth;
     private int dashWidth;
     private boolean isDashed;
@@ -67,8 +67,8 @@ public class DrawFrame extends JFrame {
     public DrawFrame() {
         isGradient = false;
         currentColor = Color.BLACK;
-        color1 = Color.BLACK;
-        color2 = Color.BLACK;
+        gradientColor1 = Color.BLACK;
+        gradientColor2 = Color.BLACK;
         lineWidth = 1;
         dashWidth = 0;
         isDashed = false;
@@ -89,12 +89,12 @@ public class DrawFrame extends JFrame {
         gradient = new JCheckBox("Use Gradient");
         gradient.addActionListener(new GradientHandler());
         firstColor = new JButton();
-        firstColor.setBackground(color1);
+        firstColor.setBackground(gradientColor1);
         firstColor.addActionListener(new FirstColorHandler());
         swapColors = new JButton("<>");
         swapColors.addActionListener(new SwapColorHandler());
         secondColor = new JButton();
-        secondColor.setBackground(color2);
+        secondColor.setBackground(gradientColor2);
         secondColor.addActionListener(new SecondColorHandler());
         strokeWidthLabel = new JLabel("Line Width:");
         strokeWidth = new JTextField("", 3);
@@ -294,9 +294,9 @@ public class DrawFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             isGradient = !isGradient;
             if (isGradient) {
-                panel.setCurrentColor(new GradientPaint(0, 0, color1, 50, 50, color2, true));
+                panel.setCurrentColor(new GradientPaint(0, 0, gradientColor1, 50, 50, gradientColor2, true));
             } else {
-                panel.setCurrentColor(color1);
+                panel.setCurrentColor(gradientColor1);
             }
         }
 
@@ -313,18 +313,14 @@ public class DrawFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             JColorChooser colorChooser = new JColorChooser();
-            JColorChooser.createDialog(null, "Choose Color", true, colorChooser, new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    color1 = colorChooser.getColor();
-                    firstColor.setBackground(color1);
-                    if (isGradient) {   //Checks to make sure new color updates gradient
-                        panel.setCurrentColor(new GradientPaint(0, 0, color1, 
-                                50, 50, color2, true));
-                    } else {
-                        panel.setCurrentColor(currentColor);
-                    }
+            JColorChooser.createDialog(null, "Choose Color", true, colorChooser, (ActionEvent e1) -> {
+                gradientColor1 = colorChooser.getColor();
+                firstColor.setBackground(gradientColor1);
+                if (isGradient) {   //Checks to make sure new color updates gradient
+                    panel.setCurrentColor(new GradientPaint(0, 0, gradientColor1,
+                            50, 50, gradientColor2, true));
+                } else {
+                    panel.setCurrentColor(currentColor);
                 }
             }, null).setVisible(true);
 
@@ -336,11 +332,11 @@ public class DrawFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Color temp = color1;
-            color1 = color2;
-            color2 = temp;
-            firstColor.setBackground(color1);
-            secondColor.setBackground(color2);
+            Color temp = gradientColor1;
+            gradientColor1 = gradientColor2;
+            gradientColor2 = temp;
+            firstColor.setBackground(gradientColor1);
+            secondColor.setBackground(gradientColor2);
         }
         
     }
@@ -356,19 +352,14 @@ public class DrawFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             JColorChooser colorChooser = new JColorChooser();
-            JColorChooser.createDialog(null, "Choose Color", true, colorChooser,
-                    new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    color2 = colorChooser.getColor();
-                    secondColor.setBackground(color2);
-                    if (isGradient) {   //Checks so new color changes the gradient
-                        panel.setCurrentColor(new GradientPaint(0, 0, color1, 
-                                50, 50, color2, true));
-                    } else {
-                        panel.setCurrentColor(currentColor);
-                    }
+            JColorChooser.createDialog(null, "Choose Color", true, colorChooser, (ActionEvent e1) -> {
+                gradientColor2 = colorChooser.getColor();
+                secondColor.setBackground(gradientColor2);
+                if (isGradient) {   //Checks so new color changes the gradient
+                    panel.setCurrentColor(new GradientPaint(0, 0, gradientColor1,
+                            50, 50, gradientColor2, true));
+                } else {
+                    panel.setCurrentColor(currentColor);
                 }
             }, null).setVisible(true);
         }
