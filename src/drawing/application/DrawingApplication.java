@@ -15,8 +15,9 @@ import org.opencv.core.Core;
 public class DrawingApplication {
 
     /**
-     * Creates a new DrawFrame and displays it with
-     * a default size of 800 pixels across and 600 pixels down
+     * Creates a new DrawFrame and displays it with a default size of 800 pixels
+     * across and 600 pixels down
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
@@ -28,5 +29,5 @@ public class DrawingApplication {
         frame.setSize(800, 600);
         frame.setVisible(true);
     }
-    
+
 }

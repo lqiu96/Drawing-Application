@@ -12,7 +12,7 @@ import java.awt.Stroke;
 
 /**
  * Inherits from MyBoundedShape and MyShape
- * 
+ *
  * @author Lawrence and Nate
  */
 public class MyRectangle extends MyBoundedShape {
@@ -20,15 +20,16 @@ public class MyRectangle extends MyBoundedShape {
     public MyRectangle() {
         super();
     }
-    
+
     public MyRectangle(Point beginning, Point end, Color color, Stroke stroke, boolean isFilled) {
         super(beginning, end, color, stroke, isFilled);
     }
 
     /**
-     * Sets the color of the shape and the stroke, and if it is filled
-     * Checks to make sure that beginning points are before (less than) end points
-     * If not, it displays the shape aiming to the left instead of the right
+     * Sets the color of the shape and the stroke, and if it is filled Checks to
+     * make sure that beginning points are before (less than) end points If not,
+     * it displays the shape aiming to the left instead of the right
+     *
      * @param g Graphics2D object
      */
     @Override
@@ -39,13 +40,13 @@ public class MyRectangle extends MyBoundedShape {
             g.fillRect(getBeginning().x > getEnd().x ? getEnd().x : getBeginning().x,
                     getBeginning().y > getEnd().y ? getEnd().y : getBeginning().y,
                     Math.abs(getEnd().x - getBeginning().x),
-                Math.abs(getEnd().y - getBeginning().y));
+                    Math.abs(getEnd().y - getBeginning().y));
         } else {
             g.drawRect(getBeginning().x > getEnd().x ? getEnd().x : getBeginning().x,
                     getBeginning().y > getEnd().y ? getEnd().y : getBeginning().y,
                     Math.abs(getEnd().x - getBeginning().x),
-                Math.abs(getEnd().y - getBeginning().y));
+                    Math.abs(getEnd().y - getBeginning().y));
         }
     }
-    
+
 }

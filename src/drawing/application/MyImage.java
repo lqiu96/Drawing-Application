@@ -14,6 +14,7 @@ import java.awt.image.ImageObserver;
  * @author Lawrence and Nate
  */
 public class MyImage implements MyGraphicsObject {
+
     private final BufferedImage image;
     private final int x;
     private final int y;
@@ -30,5 +31,5 @@ public class MyImage implements MyGraphicsObject {
     public void draw(Graphics2D g) {
         g.drawImage(image, x, y, observer);
     }
-    
+
 }

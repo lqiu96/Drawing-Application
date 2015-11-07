@@ -36,6 +36,7 @@ public class DrawPanel extends JPanel {
     private boolean filledShape;
     private final JLabel statusLabel;
     private Stroke currentStroke;
+    private String text;
 
     public DrawPanel(JLabel statusLabel) {
         this.statusLabel = statusLabel;
@@ -45,6 +46,7 @@ public class DrawPanel extends JPanel {
         this.currentShape = null;
         this.currentColor = Color.BLACK;
         this.currentStroke = new BasicStroke();
+        this.text = "";
         this.setBackground(Color.WHITE);
 
         DrawHandler handler = new DrawHandler();
@@ -116,6 +118,10 @@ public class DrawPanel extends JPanel {
         shapes.add(new MyImage(image, 0, 0, null));
         repaint();
     }
+    
+    public void setText(String text) {
+        this.text = text;
+    }
 
     /**
      * Lowers the numbers of shapes in the shapeCount and removes the last shape
@@ -167,24 +173,34 @@ public class DrawPanel extends JPanel {
          */
         @Override
         public void mousePressed(MouseEvent e) {
+//            Only clear the text message when another shape is selected (e.g when not 5)
             switch (shapeType) {
                 case 0:
+                    text = "";
                     currentShape = new MyOval();
                     return;
                 case 1:
+                    text = "";
                     currentShape = new MyLine();
                     break;
                 case 2:
+                    text = "";
                     currentShape = new MyOval();
                     ((MyBoundedShape) currentShape).setIsFilled(filledShape);
                     break;
                 case 3:
+                    text = "";
                     currentShape = new MyRectangle();
                     ((MyBoundedShape) currentShape).setIsFilled(filledShape);
                     break;
                 case 4:
+                    text = "";
                     currentShape = new MyArc();
                     ((MyBoundedShape) currentShape).setIsFilled(filledShape);
+                    break;
+                case 5:
+                    currentShape = new MyText(text, e.getX(), e.getY(), currentColor);
+                    break;
             }
             if (currentShape instanceof MyShape) {
                 ((MyShape) currentShape).setBeginning(new Point(e.getX(), e.getY()));

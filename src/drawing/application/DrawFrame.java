@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -28,6 +27,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -70,7 +70,6 @@ public class DrawFrame extends JFrame {
     private int lineWidth;
     private int dashWidth;
     private boolean isDashed;
-    private ImageIcon imageIcon;
     private BufferedImage image;
 
     private String absoluteFilePath;
@@ -79,7 +78,7 @@ public class DrawFrame extends JFrame {
         "Gray", "Green", "Light Gray", "Magenta", "Orange", "Pink", "Red",
         "White", "Yellow"};
     private final String[] shapeOptions = {"Free Form", "Line", "Oval",
-        "Rectangle", "Arc"};
+        "Rectangle", "Arc", "Text"};
 
     public DrawFrame() {
         isGradient = false;
@@ -285,6 +284,10 @@ public class DrawFrame extends JFrame {
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
+                if (shapes.getSelectedIndex() == 5) {
+                    String message = JOptionPane.showInputDialog("Enter message: ");
+                    panel.setText(message);
+                }
                 panel.setShapeType(shapes.getSelectedIndex());
             }
         }
@@ -319,7 +322,7 @@ public class DrawFrame extends JFrame {
                     panel.setImage(image);
                 } catch (IOException ex) {
                     Logger.getLogger(DrawFrame.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                }
             }
         }
 
