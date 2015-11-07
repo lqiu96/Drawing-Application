@@ -11,19 +11,19 @@ import java.awt.Point;
 import java.awt.Stroke;
 
 /**
- * An abstract class which is the parent class for
- * Ovals and Rectangles and the subclass to MyShape
- * 
- * Stores whether it is filled or not
- * @author Lawrence
+ * An abstract class which is the parent class for Ovals and Rectangles and the
+ * subclass to MyShape Stores whether it is filled or not
+ *
+ * @author Lawrence and Nate
  */
 public abstract class MyBoundedShape extends MyShape {
+
     private boolean isFilled;
-    
+
     public MyBoundedShape() {
         isFilled = false;
     }
-    
+
     public MyBoundedShape(Point beginning, Point end, Paint paint, Stroke stroke, boolean isFilled) {
         super(beginning, end, paint, stroke);
         this.isFilled = isFilled;
@@ -31,6 +31,7 @@ public abstract class MyBoundedShape extends MyShape {
 
     /**
      * Gets if it is filled
+     *
      * @return boolean if is filled
      */
     public boolean isFilled() {
@@ -39,13 +40,14 @@ public abstract class MyBoundedShape extends MyShape {
 
     /**
      * Sets if shape is filled
+     *
      * @param isFilled boolean if is filled
      */
     public void setIsFilled(boolean isFilled) {
         this.isFilled = isFilled;
     }
-    
+
     @Override
     public abstract void draw(Graphics2D g);
-    
+
 }

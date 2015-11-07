@@ -12,14 +12,14 @@ import java.awt.Stroke;
 
 /**
  *
- * @author Lawrence
+ * @author Lawrence and Nate
  */
 public class MyArc extends MyBoundedShape {
 
     public MyArc() {
         super();
     }
-    
+
     public MyArc(Point beginning, Point end, Color color, Stroke stroke, boolean isFilled) {
         super(beginning, end, color, stroke, isFilled);
     }
@@ -40,5 +40,5 @@ public class MyArc extends MyBoundedShape {
                     Math.abs(getBeginning().x - getEnd().x), 0, 180);
         }
     }
-    
+
 }

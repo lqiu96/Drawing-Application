@@ -13,16 +13,19 @@ import java.awt.Point;
 import java.awt.Stroke;
 
 /**
- * Top abstract class in the top of the Shape hierarchy
- * Strokes the beginning and end points, the color, and stroke of the shape
- * @author Lawrence
+ * Implements MyGraphicsObject that displays only the 2D shapes Top abstract
+ * class in the top of the Shape hierarchy Strokes the beginning and end points,
+ * the color, and stroke of the shape
+ *
+ * @author Lawrence and Nate
  */
-public abstract class MyShape {
+public abstract class MyShape implements MyGraphicsObject {
+
     private Point beginning;
     private Point end;
     private Paint paint;
     private Stroke stroke;
-    
+
     public MyShape() {
         beginning = new Point(0, 0);
         end = new Point(0, 0);
@@ -43,6 +46,7 @@ public abstract class MyShape {
 
     /**
      * Sets the beginning (x,y) points
+     *
      * @param beginning Point object
      */
     public void setBeginning(Point beginning) {
@@ -51,6 +55,7 @@ public abstract class MyShape {
 
     /**
      * Gets the end (x,y) points
+     *
      * @return Point object
      */
     public Point getEnd() {
@@ -59,6 +64,7 @@ public abstract class MyShape {
 
     /**
      * Sets the end (x,y) points
+     *
      * @param end Point object
      */
     public void setEnd(Point end) {
@@ -67,6 +73,7 @@ public abstract class MyShape {
 
     /**
      * Gets the color of the shape
+     *
      * @return Paint object
      */
     public Paint getPaint() {
@@ -75,6 +82,7 @@ public abstract class MyShape {
 
     /**
      * Sets the color of the shape
+     *
      * @param paint Paint object
      */
     public void setPaint(Paint paint) {
@@ -83,6 +91,7 @@ public abstract class MyShape {
 
     /**
      * Get the stroke of the shape
+     *
      * @return Stroke object
      */
     public Stroke getStroke() {
@@ -91,16 +100,12 @@ public abstract class MyShape {
 
     /**
      * Sets the stroke of the shape
+     *
      * @param stroke Stroke object
      */
     public void setStroke(Stroke stroke) {
         this.stroke = stroke;
     }
-    
-    /**
-     * Abstract draw method which each non-abstract shape class
-     * must determine how to draw and display on the panel
-     * @param g Graphics2D object
-     */
+
     public abstract void draw(Graphics2D g);
 }

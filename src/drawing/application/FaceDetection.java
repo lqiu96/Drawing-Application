@@ -16,7 +16,7 @@ import org.opencv.objdetect.CascadeClassifier;
 
 /**
  *
- * @author Lawrence
+ * @author Lawrence and Nate
  */
 public class FaceDetection implements Runnable {
 
