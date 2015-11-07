@@ -118,7 +118,7 @@ public class DrawPanel extends JPanel {
         shapes.add(new MyImage(image, 0, 0, null));
         repaint();
     }
-    
+
     public void setText(String text) {
         this.text = text;
     }
@@ -217,7 +217,7 @@ public class DrawPanel extends JPanel {
         @Override
         public void mouseReleased(MouseEvent e) {
             //if (shapeType != 0) {
-                shapes.add(currentShape);
+            shapes.add(currentShape);
             //}
             currentShape = null;
             repaint();
@@ -242,8 +242,11 @@ public class DrawPanel extends JPanel {
          */
         @Override
         public void mouseDragged(MouseEvent e) {
-            currentShape.setEnd(new Point(e.getX(), e.getY()));
+            if (currentShape instanceof MyShape) {
+                ((MyShape) currentShape).setEnd(new Point(e.getX(), e.getY()));
+            }
             statusLabel.setText("(" + e.getX() + ", " + e.getY() + ")");
             repaint();
         }
     }
+}
