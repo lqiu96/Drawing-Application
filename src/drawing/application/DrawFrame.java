@@ -14,10 +14,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -38,9 +40,8 @@ public class DrawFrame extends JFrame {
     private final JComboBox<String> colors;
     private final JComboBox<String> shapes;
     private final JCheckBox filled;
-    private final JLabel statusLabel;
-    private final DrawPanel panel;
-
+    private final JButton selectFile;
+    
     private final JCheckBox gradient;
     private final JButton firstColor;
     private final JButton swapColors;
@@ -50,6 +51,9 @@ public class DrawFrame extends JFrame {
     private final JLabel strokeDashLengthLabel;
     private final JTextField strokeDashLength;
     private final JCheckBox dashed;
+    
+    private final DrawPanel panel;
+    private final JLabel statusLabel;
 
     private boolean isGradient;
     private Color currentColor;
@@ -86,6 +90,8 @@ public class DrawFrame extends JFrame {
         shapes.addItemListener(new ShapeHandler());
         filled = new JCheckBox("Filled");
         filled.addActionListener(new FilledHandler());
+        selectFile = new JButton("Choose File:");
+        selectFile.addActionListener(new FileChooserHandler());
 
         gradient = new JCheckBox("Use Gradient");
         gradient.addActionListener(new GradientHandler());
@@ -125,6 +131,7 @@ public class DrawFrame extends JFrame {
         top.add(colors);
         top.add(shapes);
         top.add(filled);
+        top.add(selectFile);
         topOptions.add(top, BorderLayout.NORTH);
         JPanel bottom = new JPanel();
         bottom.setLayout(new FlowLayout());
@@ -280,6 +287,20 @@ public class DrawFrame extends JFrame {
             panel.setFilledShape(filled.isSelected());
         }
 
+    }
+    
+    private class FileChooserHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser();
+            int returnValue = fileChooser.showDialog(panel, null);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                System.out.println(file.getAbsolutePath());
+            }
+        }
+        
     }
 
     private class GradientHandler implements ActionListener {
