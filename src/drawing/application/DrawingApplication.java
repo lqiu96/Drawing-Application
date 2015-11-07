@@ -23,10 +23,11 @@ public class DrawingApplication {
     public static void main(String[] args) {
         // TODO code application logic here
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        
         DrawFrame frame = new DrawFrame();
         frame.setTitle("Drawing Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
     }
 

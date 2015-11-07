@@ -32,6 +32,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * Displays the panel which allows the user to choose options from button and
@@ -313,6 +315,8 @@ public class DrawFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Image filter",
+                    "jpg", "png"));
             int returnValue = fileChooser.showDialog(panel, null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 try {

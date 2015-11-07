@@ -5,6 +5,7 @@
  */
 package drawing.application;
 
+import javax.swing.JOptionPane;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
@@ -34,15 +35,15 @@ public class FaceDetection implements Runnable {
         MatOfRect faceDetections = new MatOfRect();
         faceDetector.detectMultiScale(image, faceDetections);
 
-        System.out.println("Detected " + faceDetections.toArray().length + " faces");
-
         for (Rect rect : faceDetections.toArray()) {
             Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
         }
 
-        String filename = "faceDetection.jpg";
-        System.out.println(String.format("Writing %s", filename));
-        Imgcodecs.imwrite(filename, image);
+        System.out.println(String.format("Writing %s", filePath));
+        Imgcodecs.imwrite(filePath, image);
+        
+        int numFaces = faceDetections.toArray().length;
+        JOptionPane.showMessageDialog(null, "Detected " + faceDetections.toArray().length + (numFaces == 1 ? " face" : " faces"));
     }
 
 }
