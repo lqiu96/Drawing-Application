@@ -168,6 +168,9 @@ public class DrawPanel extends JPanel {
                     currentShape = new MyRectangle();
                     ((MyBoundedShape) currentShape).setIsFilled(filledShape);
                     break;
+                case 4:
+                    currentShape = new MyArc();
+                    ((MyBoundedShape) currentShape).setIsFilled(filledShape);
             }
             currentShape.setBeginning(new Point(e.getX(), e.getY()));
             currentShape.setStroke(currentStroke);

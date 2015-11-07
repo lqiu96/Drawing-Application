@@ -62,7 +62,8 @@ public class DrawFrame extends JFrame {
     private final String[] colorOptions = {"Black", "Blue", "Cyan", "Dark Gray",
         "Gray", "Green", "Light Gray", "Magenta", "Orange", "Pink", "Red",
         "White", "Yellow"};
-    private final String[] shapeOptions = {"Free Form", "Line", "Oval", "Rectangle"};
+    private final String[] shapeOptions = {"Free Form", "Line", "Oval",
+        "Rectangle", "Arc"};
 
     public DrawFrame() {
         isGradient = false;
