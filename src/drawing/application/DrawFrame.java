@@ -41,6 +41,7 @@ public class DrawFrame extends JFrame {
     private final JComboBox<String> shapes;
     private final JCheckBox filled;
     private final JButton selectFile;
+    private final JButton detectFace;
     
     private final JCheckBox gradient;
     private final JButton firstColor;
@@ -62,6 +63,8 @@ public class DrawFrame extends JFrame {
     private int lineWidth;
     private int dashWidth;
     private boolean isDashed;
+    
+    private String absoluteFilePath;
 
     private final String[] colorOptions = {"Black", "Blue", "Cyan", "Dark Gray",
         "Gray", "Green", "Light Gray", "Magenta", "Orange", "Pink", "Red",
@@ -77,6 +80,7 @@ public class DrawFrame extends JFrame {
         lineWidth = 1;
         dashWidth = 0;
         isDashed = false;
+        absoluteFilePath = "";
 
         undo = new JButton("Undo");
         undo.addActionListener(new UndoHandler());
@@ -92,6 +96,8 @@ public class DrawFrame extends JFrame {
         filled.addActionListener(new FilledHandler());
         selectFile = new JButton("Choose File:");
         selectFile.addActionListener(new FileChooserHandler());
+        detectFace = new JButton("Detect Face");
+        detectFace.addActionListener(new FaceDetectionHandler());
 
         gradient = new JCheckBox("Use Gradient");
         gradient.addActionListener(new GradientHandler());
@@ -296,9 +302,17 @@ public class DrawFrame extends JFrame {
             JFileChooser fileChooser = new JFileChooser();
             int returnValue = fileChooser.showDialog(panel, null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                System.out.println(file.getAbsolutePath());
+                absoluteFilePath = fileChooser.getSelectedFile().getAbsolutePath();
             }
+        }
+        
+    }
+    
+    private class FaceDetectionHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            (new FaceDetection(absoluteFilePath)).run();
         }
         
     }
