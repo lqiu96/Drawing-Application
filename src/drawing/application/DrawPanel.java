@@ -68,7 +68,7 @@ public class DrawPanel extends JPanel {
         //Makes sure that in freeform shapeType of 0,
         //The current shape is not drawn because it is
         //an oval from (0,0) to where you press
-        if (currentShape != null && shapeType != 0) {
+        if (currentShape != null) {
             currentShape.draw((Graphics2D) g);
         }
         g.drawImage(image, 0, 0, this);
@@ -168,8 +168,8 @@ public class DrawPanel extends JPanel {
         public void mousePressed(MouseEvent e) {
             switch (shapeType) {
                 case 0:
-                    currentShape = new MyOval();
-                    return;
+                    currentShape = new MyPolyLines();
+                    break;
                 case 1:
                     currentShape = new MyLine();
                     break;
@@ -198,9 +198,9 @@ public class DrawPanel extends JPanel {
          */
         @Override
         public void mouseReleased(MouseEvent e) {
-            if (shapeType != 0) {
+            //if (shapeType != 0) {
                 shapes.add(currentShape);
-            }
+            //}
             currentShape = null;
             repaint();
         }
@@ -223,17 +223,7 @@ public class DrawPanel extends JPanel {
          */
         @Override
         public void mouseDragged(MouseEvent e) {
-            if (shapeType == 0) {
-                int width = (int) ((BasicStroke) currentStroke).getLineWidth();
-                if (width < 5) {
-                    width = 5;
-                }
-                shapes.add(new MyOval(new Point(e.getX() - width / 2, e.getY() - width / 2), 
-                        new Point(e.getX() + width / 2, e.getY() + width / 2),
-                        (Color) currentColor, currentStroke, true));
-            } else {
-                currentShape.setEnd(new Point(e.getX(), e.getY()));
-            }
+            currentShape.setEnd(new Point(e.getX(), e.getY()));
             statusLabel.setText("(" + e.getX() + ", " + e.getY() + ")");
             repaint();
         }

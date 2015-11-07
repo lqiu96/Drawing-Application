@@ -5,9 +5,11 @@
  */
 package drawing.application;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.util.Vector;
+import java.awt.Stroke;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,17 +17,46 @@ import java.util.Vector;
  */
 public class MyPolyLines extends MyShape{
 
-    private Vector<Point> points;
+    private ArrayList<Integer> x;
+    private ArrayList<Integer> y; 
+
+    public MyPolyLines() {  
+        super();
+        x = new ArrayList<>();
+        y = new ArrayList<>();
+    }
     
+    public MyPolyLines(Point beginning, Point end, Color color, Stroke stroke) {
+        super(beginning, end, color, stroke);
+    }
     
     @Override
     public void draw(Graphics2D g) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        setX();
+        setY();
+        
+        int[] xPoint = new int[x.size()];
+        int[] yPoint = new int[y.size()];
+        
+        for(int i = 0; i < x.size(); i++)
+        {
+            xPoint[i] = x.get(i);
+            yPoint[i] = y.get(i);
+        }
+        
+        g.setPaint(getPaint());
+        g.setStroke(getStroke());
+        g.drawPolyline(xPoint, yPoint, x.size());
     }
     
-    public Vector getPoints()
+    public void setX()
     {
-        
+       x.add(getEnd().x);
+    }
+    
+    public void setY(){
+        y.add(getEnd().y);
     }
     
 }
