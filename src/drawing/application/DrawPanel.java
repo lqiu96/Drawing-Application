@@ -9,12 +9,14 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -34,6 +36,7 @@ public class DrawPanel extends JPanel {
     private boolean filledShape;
     private final JLabel statusLabel;
     private Stroke currentStroke;
+    private BufferedImage image;
     
     public DrawPanel(JLabel statusLabel) {
         this.statusLabel = statusLabel;
@@ -43,7 +46,9 @@ public class DrawPanel extends JPanel {
         this.currentShape = null;
         this.currentColor = Color.BLACK;
         this.currentStroke = new BasicStroke();
+        this.image = null;
         this.setBackground(Color.WHITE);
+        
         DrawHandler handler = new DrawHandler();
         this.addMouseListener(handler);
         this.addMouseMotionListener(handler);
@@ -67,6 +72,7 @@ public class DrawPanel extends JPanel {
         if (currentShape != null && shapeType != 0) {
             currentShape.draw((Graphics2D) g);
         }
+        g.drawImage(image, 0, 0, this);
     }
 
     /**
@@ -99,6 +105,14 @@ public class DrawPanel extends JPanel {
      */
     public void setCurrentStroke(Stroke currentStroke) {
         this.currentStroke = currentStroke;
+    }
+    
+    /**
+     * @param image the image to set
+     */
+    public void setImage(BufferedImage image) {
+        this.image = image;
+        repaint();
     }
     
     /**

@@ -14,7 +14,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -34,6 +40,7 @@ import javax.swing.event.DocumentListener;
  * @author Lawrence
  */
 public class DrawFrame extends JFrame {
+
     private final JButton undo;
     private final JButton redo;
     private final JButton clear;
@@ -42,7 +49,7 @@ public class DrawFrame extends JFrame {
     private final JCheckBox filled;
     private final JButton selectFile;
     private final JButton detectFace;
-    
+
     private final JCheckBox gradient;
     private final JButton firstColor;
     private final JButton swapColors;
@@ -52,7 +59,7 @@ public class DrawFrame extends JFrame {
     private final JLabel strokeDashLengthLabel;
     private final JTextField strokeDashLength;
     private final JCheckBox dashed;
-    
+
     private final DrawPanel panel;
     private final JLabel statusLabel;
 
@@ -63,7 +70,9 @@ public class DrawFrame extends JFrame {
     private int lineWidth;
     private int dashWidth;
     private boolean isDashed;
-    
+    private ImageIcon imageIcon;
+    private BufferedImage image;
+
     private String absoluteFilePath;
 
     private final String[] colorOptions = {"Black", "Blue", "Cyan", "Dark Gray",
@@ -138,6 +147,7 @@ public class DrawFrame extends JFrame {
         top.add(shapes);
         top.add(filled);
         top.add(selectFile);
+        top.add(detectFace);
         topOptions.add(top, BorderLayout.NORTH);
         JPanel bottom = new JPanel();
         bottom.setLayout(new FlowLayout());
@@ -170,19 +180,19 @@ public class DrawFrame extends JFrame {
         }
 
     }
-    
+
     private class RedoHandler implements ActionListener {
 
         /**
          * When clicked, it will redo the last shaped removed
-         * 
-         * @param e ActionEvent 
+         *
+         * @param e ActionEvent
          */
         @Override
         public void actionPerformed(ActionEvent e) {
             panel.redoLastShape();
         }
-        
+
     }
 
     private class ClearHandler implements ActionListener {
@@ -294,7 +304,7 @@ public class DrawFrame extends JFrame {
         }
 
     }
-    
+
     private class FileChooserHandler implements ActionListener {
 
         @Override
@@ -302,19 +312,26 @@ public class DrawFrame extends JFrame {
             JFileChooser fileChooser = new JFileChooser();
             int returnValue = fileChooser.showDialog(panel, null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
-                absoluteFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+                try {
+                    File file = fileChooser.getSelectedFile();
+                    absoluteFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+                    image = ImageIO.read(file);
+                    panel.setImage(image);
+                } catch (IOException ex) {
+                    Logger.getLogger(DrawFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
-        
+
     }
-    
+
     private class FaceDetectionHandler implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             (new FaceDetection(absoluteFilePath)).run();
         }
-        
+
     }
 
     private class GradientHandler implements ActionListener {
@@ -363,7 +380,7 @@ public class DrawFrame extends JFrame {
         }
 
     }
-    
+
     private class SwapColorHandler implements ActionListener {
 
         @Override
@@ -374,7 +391,7 @@ public class DrawFrame extends JFrame {
             firstColor.setBackground(gradientColor1);
             secondColor.setBackground(gradientColor2);
         }
-        
+
     }
 
     private class SecondColorHandler implements ActionListener {
