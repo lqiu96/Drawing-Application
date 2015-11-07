@@ -176,6 +176,7 @@ public class DrawPanel extends JPanel {
 //            Only clear the text message when another shape is selected (e.g when not 5)
             switch (shapeType) {
                 case 0:
+                    text = "";
                     currentShape = new MyPolyLines();
                     break;
                 case 1:
