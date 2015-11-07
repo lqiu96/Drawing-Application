@@ -319,7 +319,7 @@ public class DrawFrame extends JFrame {
                     panel.setImage(image);
                 } catch (IOException ex) {
                     Logger.getLogger(DrawFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            }
             }
         }
 

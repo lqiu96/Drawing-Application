@@ -20,7 +20,7 @@ import org.opencv.objdetect.CascadeClassifier;
  */
 public class FaceDetection implements Runnable {
 
-    private String filePath;
+    private final String filePath;
 
     public FaceDetection(String filePath) {
         this.filePath = filePath;
@@ -28,8 +28,7 @@ public class FaceDetection implements Runnable {
 
     @Override
     public void run() {
-        CascadeClassifier faceDetector = new CascadeClassifier(getClass()
-                .getResource("lbpcascade_frontalface.xml").getPath());
+        CascadeClassifier faceDetector = new CascadeClassifier("lbpcascade_frontalface.xml");
         Mat image = Imgcodecs.imread(filePath);
 
         MatOfRect faceDetections = new MatOfRect();
@@ -41,7 +40,7 @@ public class FaceDetection implements Runnable {
             Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
         }
 
-        String filename = "faceDetection.png";
+        String filename = "faceDetection.jpg";
         System.out.println(String.format("Writing %s", filename));
         Imgcodecs.imwrite(filename, image);
     }
