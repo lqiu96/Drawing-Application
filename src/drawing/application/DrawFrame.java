@@ -61,6 +61,7 @@ public class DrawFrame extends JFrame {
     private final JLabel strokeDashLengthLabel;
     private final JTextField strokeDashLength;
     private final JCheckBox dashed;
+    private final JButton erase;
 
     private final DrawPanel panel;
     private final JLabel statusLabel;
