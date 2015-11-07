@@ -37,7 +37,7 @@ import javax.swing.event.DocumentListener;
  * Displays the panel which allows the user to choose options from button and
  * the panel to draw on
  *
- * @author Lawrence
+ * @author Lawrence and Nate
  */
 public class DrawFrame extends JFrame {
 

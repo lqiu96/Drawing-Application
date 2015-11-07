@@ -12,7 +12,7 @@ import java.awt.Stroke;
 
 /**
  *
- * @author Lawrence
+ * @author Lawrence and Nate
  */
 public class MyArc extends MyBoundedShape {
 

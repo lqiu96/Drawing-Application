@@ -12,7 +12,8 @@ import java.awt.Stroke;
 
 /**
  * Inherits from MyShape
- * @author Lawrence
+ * 
+ * @author Lawrence and Nate
  */
 public class MyLine extends MyShape {
     

@@ -12,7 +12,8 @@ import java.awt.Stroke;
 
 /**
  * Inherits from MyBoundedShape and MyShape
- * @author Lawrence
+ * 
+ * @author Lawrence and Nate
  */
 public class MyRectangle extends MyBoundedShape {
 

@@ -13,9 +13,9 @@ import java.awt.Stroke;
 /**
  * An abstract class which is the parent class for
  * Ovals and Rectangles and the subclass to MyShape
- * 
  * Stores whether it is filled or not
- * @author Lawrence
+ * 
+ * @author Lawrence and Nate
  */
 public abstract class MyBoundedShape extends MyShape {
     private boolean isFilled;

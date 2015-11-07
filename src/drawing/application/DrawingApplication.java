@@ -10,7 +10,7 @@ import org.opencv.core.Core;
 
 /**
  *
- * @author Lawrence
+ * @author Lawrence and Nate
  */
 public class DrawingApplication {
 
