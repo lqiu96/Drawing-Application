@@ -130,6 +130,8 @@ public class DrawFrame extends JFrame {
         strokeDashLength.getDocument().addDocumentListener(new StrokeDashLengthHandler());
         dashed = new JCheckBox("Dashed");
         dashed.addActionListener(new DashedHandler());
+        erase = new JButton("Eraser");
+        erase.addActionListener(new EraseHandler());
 
         statusLabel = new JLabel();
         panel = new DrawPanel(statusLabel);
@@ -160,6 +162,7 @@ public class DrawFrame extends JFrame {
         bottom.add(strokeDashLengthLabel);
         bottom.add(strokeDashLength);
         bottom.add(dashed);
+        bottom.add(erase);
         topOptions.add(bottom, BorderLayout.SOUTH);
 
         add(topOptions, BorderLayout.NORTH);
@@ -578,5 +581,25 @@ public class DrawFrame extends JFrame {
             }
         }
 
+    }
+    
+    private class EraseHandler implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(!erase.isSelected())
+            {
+                erase.setBackground(new Color(170,170,204));
+                //erase.setBorderPainted(true);
+               // erase.setFocusPainted(true);
+                erase.setSelected(true);
+                panel.setErase(true);
+            }
+            else{
+                //erase.setFocusPainted(false);
+                erase.setBackground(null);
+                erase.setSelected(false);
+                panel.setErase(false);
+            }
+        }
     }
 }

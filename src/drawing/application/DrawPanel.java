@@ -37,6 +37,9 @@ public class DrawPanel extends JPanel {
     private final JLabel statusLabel;
     private Stroke currentStroke;
     private String text;
+    private boolean erase;
+    private final int eraserSize = 20;
+    private MyOval eraseCursor = new MyOval();
 
     public DrawPanel(JLabel statusLabel) {
         this.statusLabel = statusLabel;
@@ -48,6 +51,7 @@ public class DrawPanel extends JPanel {
         this.currentStroke = new BasicStroke();
         this.text = "";
         this.setBackground(Color.WHITE);
+        erase = false;
 
         DrawHandler handler = new DrawHandler();
         this.addMouseListener(handler);
@@ -72,6 +76,10 @@ public class DrawPanel extends JPanel {
         //an oval from (0,0) to where you press
         if (currentShape != null) {
             currentShape.draw((Graphics2D) g);
+        }
+        
+        if(erase){
+            eraseCursor.draw((Graphics2D) g);
         }
     }
 
@@ -161,6 +169,20 @@ public class DrawPanel extends JPanel {
         repaint();
     }
 
+    /**
+     * @return the erase
+     */
+    public boolean isErase() {
+        return erase;
+    }
+
+    /**
+     * @param erase the erase to set
+     */
+    public void setErase(boolean erase) {
+        this.erase = erase;
+    }
+
     private class DrawHandler extends MouseAdapter implements MouseMotionListener {
 
         /**
@@ -174,37 +196,49 @@ public class DrawPanel extends JPanel {
         @Override
         public void mousePressed(MouseEvent e) {
 //            Only clear the text message when another shape is selected (e.g when not 5)
-            switch (shapeType) {
-                case 0:
-                    currentShape = new MyPolyLines();
-                    break;
-                case 1:
-                    text = "";
-                    currentShape = new MyLine();
-                    break;
-                case 2:
-                    text = "";
-                    currentShape = new MyOval();
-                    ((MyBoundedShape) currentShape).setIsFilled(filledShape);
-                    break;
-                case 3:
-                    text = "";
-                    currentShape = new MyRectangle();
-                    ((MyBoundedShape) currentShape).setIsFilled(filledShape);
-                    break;
-                case 4:
-                    text = "";
-                    currentShape = new MyArc();
-                    ((MyBoundedShape) currentShape).setIsFilled(filledShape);
-                    break;
-                case 5:
-                    currentShape = new MyText(text, e.getX(), e.getY(), currentColor);
-                    break;
+            //if the user is not trying to erase
+            if (!erase) {
+                switch (shapeType) {
+                    case 0:
+                        text = "";
+                        currentShape = new MyPolyLines();
+                        break;
+                    case 1:
+                        text = "";
+                        currentShape = new MyLine();
+                        break;
+                    case 2:
+                        text = "";
+                        currentShape = new MyOval();
+                        ((MyBoundedShape) currentShape).setIsFilled(filledShape);
+                        break;
+                    case 3:
+                        text = "";
+                        currentShape = new MyRectangle();
+                        ((MyBoundedShape) currentShape).setIsFilled(filledShape);
+                        break;
+                    case 4:
+                        text = "";
+                        currentShape = new MyArc();
+                        ((MyBoundedShape) currentShape).setIsFilled(filledShape);
+                        break;
+                    case 5:
+                        currentShape = new MyText(text, e.getX(), e.getY(), currentColor);
+                        break;
+                }
+                if (currentShape instanceof MyShape) {
+                    ((MyShape) currentShape).setBeginning(new Point(e.getX(), e.getY()));
+                    ((MyShape) currentShape).setStroke(currentStroke);
+                    ((MyShape) currentShape).setPaint(currentColor);
+                }
             }
-            if (currentShape instanceof MyShape) {
+            else
+            {
+                currentShape = new MyPolyLines();
                 ((MyShape) currentShape).setBeginning(new Point(e.getX(), e.getY()));
-                ((MyShape) currentShape).setStroke(currentStroke);
-                ((MyShape) currentShape).setPaint(currentColor);
+                ((MyShape) currentShape).setStroke(new BasicStroke(eraserSize, BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND));
+                ((MyShape) currentShape).setPaint(getBackground());
             }
         }
 
@@ -231,6 +265,13 @@ public class DrawPanel extends JPanel {
         @Override
         public void mouseMoved(MouseEvent e) {
             statusLabel.setText("(" + e.getX() + ", " + e.getY() + ")");
+            
+            if(erase)
+            {
+                eraseCursor.setBeginning(new Point(e.getX()-10, e.getY()-10));
+                eraseCursor.setEnd(new Point(e.getX()+10, e.getY()+10));
+                repaint();
+            }
         }
 
         /**
@@ -242,10 +283,29 @@ public class DrawPanel extends JPanel {
          */
         @Override
         public void mouseDragged(MouseEvent e) {
+            
             if (currentShape instanceof MyShape) {
                 ((MyShape) currentShape).setEnd(new Point(e.getX(), e.getY()));
             }
             statusLabel.setText("(" + e.getX() + ", " + e.getY() + ")");
+
+            if (erase) {
+                eraseCursor.setBeginning(new Point(e.getX() - 10, e.getY() - 10));
+                eraseCursor.setEnd(new Point(e.getX() + 10, e.getY() + 10));
+            }
+            repaint();
+        }
+        
+        
+        @Override
+        public void mouseEntered(MouseEvent e){
+            eraseCursor.setPaint(Color.BLACK);
+            repaint();
+        }
+        
+        @Override
+        public void mouseExited(MouseEvent e){
+            eraseCursor.setPaint(getBackground());
             repaint();
         }
     }
