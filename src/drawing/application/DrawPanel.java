@@ -5,6 +5,16 @@
  */
 package drawing.application;
 
+import drawing.application.Graphics.MyPolyLine;
+import drawing.application.Graphics.MyArc;
+import drawing.application.Graphics.MyRectangle;
+import drawing.application.Graphics.MyShape;
+import drawing.application.Graphics.MyText;
+import drawing.application.Graphics.MyBoundedShape;
+import drawing.application.Graphics.MyLine;
+import drawing.application.Graphics.MyImage;
+import drawing.application.Graphics.MyOval;
+import drawing.application.Graphics.MyGraphicsObject;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -201,7 +211,7 @@ public class DrawPanel extends JPanel {
                 switch (shapeType) {
                     case 0:
                         text = "";
-                        currentShape = new MyPolyLines();
+                        currentShape = new MyPolyLine();
                         break;
                     case 1:
                         text = "";
@@ -234,7 +244,7 @@ public class DrawPanel extends JPanel {
             }
             else
             {
-                currentShape = new MyPolyLines();
+                currentShape = new MyPolyLine();
                 ((MyShape) currentShape).setBeginning(new Point(e.getX(), e.getY()));
                 ((MyShape) currentShape).setStroke(new BasicStroke(eraserSize, BasicStroke.CAP_ROUND,
                         BasicStroke.JOIN_ROUND));
