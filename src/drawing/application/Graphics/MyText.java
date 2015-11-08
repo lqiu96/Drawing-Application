@@ -14,6 +14,7 @@ import java.awt.Paint;
  * @author Lawrence
  */
 public class MyText implements MyGraphicsObject {
+
     private final String text;
     private final int x;
     private final int y;
@@ -25,11 +26,11 @@ public class MyText implements MyGraphicsObject {
         this.y = y;
         this.paint = paint;
     }
-    
+
     @Override
     public void draw(Graphics2D g) {
         g.setColor((Color) paint);
         g.drawString(text, x, y);
     }
-    
+
 }

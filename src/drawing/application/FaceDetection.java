@@ -36,14 +36,17 @@ public class FaceDetection implements Runnable {
         faceDetector.detectMultiScale(image, faceDetections);
 
         for (Rect rect : faceDetections.toArray()) {
-            Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
+            Imgproc.rectangle(image, new Point(rect.x, rect.y),
+                    new Point(rect.x + rect.width, rect.y + rect.height),
+                    new Scalar(0, 255, 0));
         }
 
         System.out.println(String.format("Writing %s", filePath));
         Imgcodecs.imwrite(filePath, image);
-        
+
         int numFaces = faceDetections.toArray().length;
-        JOptionPane.showMessageDialog(null, "Detected " + faceDetections.toArray().length + (numFaces == 1 ? " face" : " faces"));
+        JOptionPane.showMessageDialog(null, "Detected " + faceDetections
+                .toArray().length + (numFaces == 1 ? " face" : " faces"));
     }
 
 }

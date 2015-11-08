@@ -15,20 +15,20 @@ import org.opencv.core.Core;
 public class DrawingApplication {
 
     /**
-     * Creates a new DrawFrame and displays it with a default size of 800 pixels
-     * across and 600 pixels down
+     * Creates a new DrawFrame and displays it start as full screen with a
+     * default size of 800 pixels across and 800 pixels down
      *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // TODO code application logic here
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        
+
         DrawFrame frame = new DrawFrame();
         frame.setTitle("Drawing Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setSize(800, 800);
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setSize(1200, 800);
         frame.setVisible(true);
     }
 

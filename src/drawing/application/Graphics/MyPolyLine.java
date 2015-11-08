@@ -33,8 +33,7 @@ public class MyPolyLine extends MyShape {
 
     @Override
     public void draw(Graphics2D g) {
-        addEndCoordinate();
-
+            addEndCoordinate();
         int length = xValues.size();
 
         int[] xPoint = new int[length];

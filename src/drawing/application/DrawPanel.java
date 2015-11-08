@@ -47,9 +47,9 @@ public class DrawPanel extends JPanel {
     private final JLabel statusLabel;
     private Stroke currentStroke;
     private String text;
-    private boolean erase;
+    private boolean eraseSelected;
     private final int eraserSize = 20;
-    private MyOval eraseCursor = new MyOval();
+    private final MyOval eraseCursor;
 
     public DrawPanel(JLabel statusLabel) {
         this.statusLabel = statusLabel;
@@ -61,7 +61,8 @@ public class DrawPanel extends JPanel {
         this.currentStroke = new BasicStroke();
         this.text = "";
         this.setBackground(Color.WHITE);
-        erase = false;
+        eraseSelected = false;
+        eraseCursor = new MyOval();
 
         DrawHandler handler = new DrawHandler();
         this.addMouseListener(handler);
@@ -77,18 +78,13 @@ public class DrawPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        //Utilize Java8 streams
-        shapes.stream().forEach((shape) -> {
+        shapes.stream().forEach((shape) -> {    //Utilize Java 8 streams
             shape.draw((Graphics2D) g);
         });
-        //Makes sure that in freeform shapeType of 0,
-        //The current shape is not drawn because it is
-        //an oval from (0,0) to where you press
         if (currentShape != null) {
             currentShape.draw((Graphics2D) g);
         }
-        
-        if(erase){
+        if (eraseSelected) {
             eraseCursor.draw((Graphics2D) g);
         }
     }
@@ -180,17 +176,17 @@ public class DrawPanel extends JPanel {
     }
 
     /**
-     * @return the erase
+     * @return the eraseSelected
      */
     public boolean isErase() {
-        return erase;
+        return eraseSelected;
     }
 
     /**
-     * @param erase the erase to set
+     * @param erase the eraseSelected to set
      */
     public void setErase(boolean erase) {
-        this.erase = erase;
+        this.eraseSelected = erase;
     }
 
     private class DrawHandler extends MouseAdapter implements MouseMotionListener {
@@ -206,8 +202,8 @@ public class DrawPanel extends JPanel {
         @Override
         public void mousePressed(MouseEvent e) {
 //            Only clear the text message when another shape is selected (e.g when not 5)
-            //if the user is not trying to erase
-            if (!erase) {
+            //if the user is not trying to eraseSelected
+            if (!eraseSelected) {
                 switch (shapeType) {
                     case 0:
                         text = "";
@@ -236,16 +232,16 @@ public class DrawPanel extends JPanel {
                         currentShape = new MyText(text, e.getX(), e.getY(), currentColor);
                         break;
                 }
-                if (currentShape instanceof MyShape) {
+                if (currentShape instanceof MyShape) {  //Text isn't part of MyShape Hierarchy
                     ((MyShape) currentShape).setBeginning(new Point(e.getX(), e.getY()));
                     ((MyShape) currentShape).setStroke(currentStroke);
                     ((MyShape) currentShape).setPaint(currentColor);
                 }
-            }
-            else
-            {
+            } else {
                 currentShape = new MyPolyLine();
-                ((MyShape) currentShape).setBeginning(new Point(e.getX(), e.getY()));
+                //Switching this to setEnd fixes the issue with the eraser drawing from (0,0)
+                //Not sure why, but I believe it has to do with polyline drawing with sometimes no points?
+                ((MyShape) currentShape).setEnd(new Point(e.getX(), e.getY()));
                 ((MyShape) currentShape).setStroke(new BasicStroke(eraserSize, BasicStroke.CAP_ROUND,
                         BasicStroke.JOIN_ROUND));
                 ((MyShape) currentShape).setPaint(getBackground());
@@ -260,9 +256,10 @@ public class DrawPanel extends JPanel {
          */
         @Override
         public void mouseReleased(MouseEvent e) {
-            //if (shapeType != 0) {
+            if (currentShape instanceof MyShape) {
+                ((MyShape) currentShape).setEnd(new Point(e.getX(), e.getY()));
+            }
             shapes.add(currentShape);
-            //}
             currentShape = null;
             repaint();
         }
@@ -275,11 +272,10 @@ public class DrawPanel extends JPanel {
         @Override
         public void mouseMoved(MouseEvent e) {
             statusLabel.setText("(" + e.getX() + ", " + e.getY() + ")");
-            
-            if(erase)
-            {
-                eraseCursor.setBeginning(new Point(e.getX()-10, e.getY()-10));
-                eraseCursor.setEnd(new Point(e.getX()+10, e.getY()+10));
+
+            if (eraseSelected) {
+                eraseCursor.setBeginning(new Point(e.getX() - 10, e.getY() - 10));
+                eraseCursor.setEnd(new Point(e.getX() + 10, e.getY() + 10));
                 repaint();
             }
         }
@@ -293,28 +289,27 @@ public class DrawPanel extends JPanel {
          */
         @Override
         public void mouseDragged(MouseEvent e) {
-            
             if (currentShape instanceof MyShape) {
                 ((MyShape) currentShape).setEnd(new Point(e.getX(), e.getY()));
             }
+
             statusLabel.setText("(" + e.getX() + ", " + e.getY() + ")");
 
-            if (erase) {
+            if (eraseSelected) {
                 eraseCursor.setBeginning(new Point(e.getX() - 10, e.getY() - 10));
                 eraseCursor.setEnd(new Point(e.getX() + 10, e.getY() + 10));
             }
             repaint();
         }
-        
-        
+
         @Override
-        public void mouseEntered(MouseEvent e){
+        public void mouseEntered(MouseEvent e) {
             eraseCursor.setPaint(Color.BLACK);
             repaint();
         }
-        
+
         @Override
-        public void mouseExited(MouseEvent e){
+        public void mouseExited(MouseEvent e) {
             eraseCursor.setPaint(getBackground());
             repaint();
         }

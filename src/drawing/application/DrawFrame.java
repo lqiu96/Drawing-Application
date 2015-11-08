@@ -46,11 +46,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author Lawrence and Nate
  */
 public class DrawFrame extends JFrame {
-
     private final JMenuBar menuBar;
     private final JMenu file;
     private final JMenuItem chooseFile;
     private final JMenuItem detectFace;
+    private final JMenu edit;
     private final JMenuItem undo;
     private final JMenuItem redo;
     private final JMenuItem clear;
@@ -68,7 +68,7 @@ public class DrawFrame extends JFrame {
     private final JLabel strokeDashLengthLabel;
     private final JSlider strokeDashLength;
     private final JCheckBox dashed;
-    private final JButton erase;
+    private final JButton eraser;
 
     private final DrawPanel panel;
     private final JLabel statusLabel;
@@ -100,6 +100,8 @@ public class DrawFrame extends JFrame {
         detectFace = new JMenuItem("Detect Face");
         detectFace.addActionListener(new FaceDetectionHandler());
         detectFace.setMnemonic(KeyEvent.VK_D);
+        edit = new JMenu("Edit");
+        edit.setMnemonic(KeyEvent.VK_E);
         undo = new JMenuItem("Undo");
         undo.addActionListener(new UndoHandler());
         undo.setMnemonic(KeyEvent.VK_U);
@@ -112,10 +114,11 @@ public class DrawFrame extends JFrame {
         file.add(chooseFile);
         file.add(detectFace);
         file.addSeparator();
-        file.add(undo);
-        file.add(redo);
-        file.add(clear);
+        edit.add(undo);
+        edit.add(redo);
+        edit.add(clear);
         menuBar.add(file);
+        menuBar.add(edit);
         setJMenuBar(menuBar);
 
         isGradient = false;
@@ -160,8 +163,8 @@ public class DrawFrame extends JFrame {
         strokeDashLength.addChangeListener(new StrokeDashLengthHandler());
         dashed = new JCheckBox("Dashed");
         dashed.addActionListener(new DashedHandler());
-        erase = new JButton("Eraser");
-        erase.addActionListener(new EraseHandler());
+        eraser = new JButton("Eraser");
+        eraser.addActionListener(new EraseHandler());
 
         statusLabel = new JLabel();
         panel = new DrawPanel(statusLabel);
@@ -170,25 +173,22 @@ public class DrawFrame extends JFrame {
 
         JPanel topOptions = new JPanel();
         topOptions.setLayout(new BorderLayout());
-        JPanel top = new JPanel();
-        top.setLayout(new FlowLayout());
-        top.add(colors);
-        top.add(shapes);
-        top.add(filled);
-        topOptions.add(top, BorderLayout.NORTH);
-        JPanel bottom = new JPanel();
-        bottom.setLayout(new FlowLayout());
-        bottom.add(gradient);
-        bottom.add(firstColor);
-        bottom.add(swapColors);
-        bottom.add(secondColor);
-        bottom.add(strokeWidthLabel);
-        bottom.add(strokeWidth);
-        bottom.add(strokeDashLengthLabel);
-        bottom.add(strokeDashLength);
-        bottom.add(dashed);
-        bottom.add(erase);
-        topOptions.add(bottom, BorderLayout.SOUTH);
+        JPanel optionsPanel = new JPanel();
+        optionsPanel.setLayout(new FlowLayout());
+        optionsPanel.add(colors);
+        optionsPanel.add(shapes);
+        optionsPanel.add(filled);
+        optionsPanel.add(gradient);
+        optionsPanel.add(firstColor);
+        optionsPanel.add(swapColors);
+        optionsPanel.add(secondColor);
+        optionsPanel.add(strokeWidthLabel);
+        optionsPanel.add(strokeWidth);
+        optionsPanel.add(strokeDashLengthLabel);
+        optionsPanel.add(strokeDashLength);
+        optionsPanel.add(dashed);
+        optionsPanel.add(eraser);
+        topOptions.add(optionsPanel, BorderLayout.CENTER);
 
         add(topOptions, BorderLayout.NORTH);
         add(panel, BorderLayout.CENTER);
@@ -458,7 +458,7 @@ public class DrawFrame extends JFrame {
         @Override
         public void stateChanged(ChangeEvent e) {
             lineWidth = strokeWidth.getValue();
-            lineWidth = lineWidth < 0 ? 1 : lineWidth;
+            lineWidth = lineWidth <= 0 ? 1 : lineWidth;
             strokeWidth.setToolTipText(String.valueOf(lineWidth));
             if (isDashed) {
                 float[] dashes = {lineWidth};
@@ -477,7 +477,7 @@ public class DrawFrame extends JFrame {
         @Override
         public void stateChanged(ChangeEvent e) {
             dashWidth = strokeDashLength.getValue();
-            dashWidth = dashWidth < 0 ? 1 : dashWidth;
+            dashWidth = dashWidth <= 0 ? 1 : dashWidth;
             strokeDashLength.setToolTipText(String.valueOf(dashWidth));
             if (isDashed) {
                 float[] dashes = {dashWidth};
@@ -514,20 +514,18 @@ public class DrawFrame extends JFrame {
         }
 
     }
-    
-    private class EraseHandler implements ActionListener{
+
+    private class EraseHandler implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(!erase.isSelected())
-            {
-                erase.setBackground(new Color(170,170,204));
-
-                erase.setSelected(true);
+            if (!eraser.isSelected()) {
+                eraser.setBackground(new Color(170, 170, 204));
+                eraser.setSelected(true);
                 panel.setErase(true);
-            }
-            else{
-                erase.setBackground(null);
-                erase.setSelected(false);
+            } else {
+                eraser.setBackground(null);
+                eraser.setSelected(false);
                 panel.setErase(false);
             }
         }
