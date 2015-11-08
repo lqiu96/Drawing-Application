@@ -5,6 +5,7 @@
  */
 package drawing.application;
 
+import com.sun.glass.events.KeyEvent;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -27,14 +29,14 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -45,14 +47,17 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class DrawFrame extends JFrame {
 
-    private final JButton undo;
-    private final JButton redo;
-    private final JButton clear;
+    private final JMenuBar menuBar;
+    private final JMenu file;
+    private final JMenuItem chooseFile;
+    private final JMenuItem detectFace;
+    private final JMenuItem undo;
+    private final JMenuItem redo;
+    private final JMenuItem clear;
+
     private final JComboBox<String> colors;
     private final JComboBox<String> shapes;
     private final JCheckBox filled;
-    private final JButton selectFile;
-    private final JButton detectFace;
 
     private final JCheckBox gradient;
     private final JButton firstColor;
@@ -63,7 +68,6 @@ public class DrawFrame extends JFrame {
     private final JLabel strokeDashLengthLabel;
     private final JSlider strokeDashLength;
     private final JCheckBox dashed;
-//    private final JButton erase;
 
     private final DrawPanel panel;
     private final JLabel statusLabel;
@@ -86,6 +90,33 @@ public class DrawFrame extends JFrame {
         "Rectangle", "Arc", "Text"};
 
     public DrawFrame() {
+        menuBar = new JMenuBar();
+        file = new JMenu("File");
+        file.setMnemonic(KeyEvent.VK_F);
+        chooseFile = new JMenuItem("Choose File");
+        chooseFile.addActionListener(new FileChooserHandler());
+        chooseFile.setMnemonic(KeyEvent.VK_H);
+        detectFace = new JMenuItem("Detect Face");
+        detectFace.addActionListener(new FaceDetectionHandler());
+        detectFace.setMnemonic(KeyEvent.VK_D);
+        undo = new JMenuItem("Undo");
+        undo.addActionListener(new UndoHandler());
+        undo.setMnemonic(KeyEvent.VK_U);
+        redo = new JMenuItem("Redo");
+        redo.addActionListener(new RedoHandler());
+        redo.setMnemonic(KeyEvent.VK_R);
+        clear = new JMenuItem("Clear");
+        clear.addActionListener(new ClearHandler());
+        clear.setMnemonic(KeyEvent.VK_C);
+        file.add(chooseFile);
+        file.add(detectFace);
+        file.addSeparator();
+        file.add(undo);
+        file.add(redo);
+        file.add(clear);
+        menuBar.add(file);
+        setJMenuBar(menuBar);
+
         isGradient = false;
         currentColor = Color.BLACK;
         gradientColor1 = Color.BLACK;
@@ -95,22 +126,12 @@ public class DrawFrame extends JFrame {
         isDashed = false;
         absoluteFilePath = "";
 
-        undo = new JButton("Undo");
-        undo.addActionListener(new UndoHandler());
-        redo = new JButton("Redo");
-        redo.addActionListener(new RedoHandler());
-        clear = new JButton("Clear");
-        clear.addActionListener(new ClearHandler());
         colors = new JComboBox(colorOptions);
         colors.addItemListener(new ColorHandler());
         shapes = new JComboBox(shapeOptions);
         shapes.addItemListener(new ShapeHandler());
         filled = new JCheckBox("Filled");
         filled.addActionListener(new FilledHandler());
-        selectFile = new JButton("Choose File:");
-        selectFile.addActionListener(new FileChooserHandler());
-        detectFace = new JButton("Detect Face");
-        detectFace.addActionListener(new FaceDetectionHandler());
 
         gradient = new JCheckBox("Use Gradient");
         gradient.addActionListener(new GradientHandler());
@@ -123,12 +144,18 @@ public class DrawFrame extends JFrame {
         secondColor.setBackground(gradientColor2);
         secondColor.addActionListener(new SecondColorHandler());
         strokeWidthLabel = new JLabel("Line Width:");
-        strokeWidth = new JSlider(1, 100, 1);
-        strokeWidth.setMajorTickSpacing(10);
+        strokeWidth = new JSlider(0, 100, 0);
+        strokeWidth.setMajorTickSpacing(20);
+        strokeWidth.setMinorTickSpacing(10);
+        strokeWidth.setPaintLabels(true);
+        strokeWidth.setPaintTicks(true);
         strokeWidth.addChangeListener(new StrokeWidthHandler());
         strokeDashLengthLabel = new JLabel("Dash Length:");
-        strokeDashLength = new JSlider(1, 100, 1);
-        strokeDashLength.setMajorTickSpacing(10);
+        strokeDashLength = new JSlider(0, 100, 0);
+        strokeDashLength.setMajorTickSpacing(20);
+        strokeDashLength.setMinorTickSpacing(10);
+        strokeDashLength.setPaintLabels(true);
+        strokeDashLength.setPaintTicks(true);
         strokeDashLength.addChangeListener(new StrokeDashLengthHandler());
         dashed = new JCheckBox("Dashed");
         dashed.addActionListener(new DashedHandler());
@@ -142,14 +169,9 @@ public class DrawFrame extends JFrame {
         topOptions.setLayout(new BorderLayout());
         JPanel top = new JPanel();
         top.setLayout(new FlowLayout());
-        top.add(undo);
-        top.add(redo);
-        top.add(clear);
         top.add(colors);
         top.add(shapes);
         top.add(filled);
-        top.add(selectFile);
-        top.add(detectFace);
         topOptions.add(top, BorderLayout.NORTH);
         JPanel bottom = new JPanel();
         bottom.setLayout(new FlowLayout());
@@ -169,7 +191,7 @@ public class DrawFrame extends JFrame {
         add(statusLabel, BorderLayout.SOUTH);
     }
 
-    private class UndoHandler implements ActionListener {
+    private class UndoHandler extends AbstractAction {
 
         /**
          * When clicked, it will call the panel to clear the last shape
@@ -426,31 +448,35 @@ public class DrawFrame extends JFrame {
         }
 
     }
-    
+
     private class StrokeWidthHandler implements ChangeListener {
 
         @Override
         public void stateChanged(ChangeEvent e) {
             lineWidth = strokeWidth.getValue();
+            lineWidth = lineWidth < 0 ? 1 : lineWidth;
+            strokeWidth.setToolTipText(String.valueOf(lineWidth));
             if (isDashed) {
-                float[] dashes = { lineWidth };
+                float[] dashes = {lineWidth};
                 panel.setCurrentStroke(new BasicStroke(strokeWidth.getValue(),
                         BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10, dashes, 0));
             } else {
-                panel.setCurrentStroke(new BasicStroke(strokeWidth.getValue(), 
+                panel.setCurrentStroke(new BasicStroke(strokeWidth.getValue(),
                         BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             }
         }
-        
+
     }
-    
+
     private class StrokeDashLengthHandler implements ChangeListener {
 
         @Override
         public void stateChanged(ChangeEvent e) {
             dashWidth = strokeDashLength.getValue();
+            dashWidth = dashWidth < 0 ? 1 : dashWidth;
+            strokeDashLength.setToolTipText(String.valueOf(dashWidth));
             if (isDashed) {
-                float[] dashes = { dashWidth };
+                float[] dashes = {dashWidth};
                 panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
                         BasicStroke.JOIN_ROUND, 10, dashes, 0));
             } else {
@@ -458,9 +484,9 @@ public class DrawFrame extends JFrame {
                         BasicStroke.JOIN_ROUND));
             }
         }
-        
+
     }
-    
+
     private class DashedHandler implements ActionListener {
 
         /**
