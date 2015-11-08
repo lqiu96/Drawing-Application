@@ -29,10 +29,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -57,11 +59,11 @@ public class DrawFrame extends JFrame {
     private final JButton swapColors;
     private final JButton secondColor;
     private final JLabel strokeWidthLabel;
-    private final JTextField strokeWidth;
+    private final JSlider strokeWidth;
     private final JLabel strokeDashLengthLabel;
-    private final JTextField strokeDashLength;
+    private final JSlider strokeDashLength;
     private final JCheckBox dashed;
-    private final JButton erase;
+//    private final JButton erase;
 
     private final DrawPanel panel;
     private final JLabel statusLabel;
@@ -89,7 +91,7 @@ public class DrawFrame extends JFrame {
         gradientColor1 = Color.BLACK;
         gradientColor2 = Color.BLACK;
         lineWidth = 1;
-        dashWidth = 0;
+        dashWidth = 1;
         isDashed = false;
         absoluteFilePath = "";
 
@@ -121,15 +123,13 @@ public class DrawFrame extends JFrame {
         secondColor.setBackground(gradientColor2);
         secondColor.addActionListener(new SecondColorHandler());
         strokeWidthLabel = new JLabel("Line Width:");
-        strokeWidth = new JTextField("", 3);
-        //Create a new document listener because an action listener
-        //would require the user to press enter to register
-        strokeWidth.getDocument().addDocumentListener(new StrokeWidthHandler());
+        strokeWidth = new JSlider(1, 100, 1);
+        strokeWidth.setMajorTickSpacing(10);
+        strokeWidth.addChangeListener(new StrokeWidthHandler());
         strokeDashLengthLabel = new JLabel("Dash Length:");
-        strokeDashLength = new JTextField("", 3);
-        //Create a new document listener because an action listener
-        //would require the user to press enter to register
-        strokeDashLength.getDocument().addDocumentListener(new StrokeDashLengthHandler());
+        strokeDashLength = new JSlider(1, 100, 1);
+        strokeDashLength.setMajorTickSpacing(10);
+        strokeDashLength.addChangeListener(new StrokeDashLengthHandler());
         dashed = new JCheckBox("Dashed");
         dashed.addActionListener(new DashedHandler());
 
@@ -426,85 +426,31 @@ public class DrawFrame extends JFrame {
         }
 
     }
-
-    private class StrokeWidthHandler implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            try {
-                lineWidth = Integer.parseInt(strokeWidth.getText());
-            } catch (NumberFormatException ex) {
-                lineWidth = 1;
-            }
-            if (lineWidth < 1) {
-                lineWidth = 1;
-            }
-            if (isDashed) {
-                float[] dashes = {dashWidth};
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND, 10, dashes, 0));
-            } else {
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND));
-            }
-        }
+    
+    private class StrokeWidthHandler implements ChangeListener {
 
         @Override
-        public void removeUpdate(DocumentEvent e) {
-            try {
-                lineWidth = Integer.parseInt(strokeWidth.getText());
-            } catch (NumberFormatException ex) {
-                lineWidth = 1;
-            }
-            if (lineWidth < 1) {
-                lineWidth = 1;
-            }
+        public void stateChanged(ChangeEvent e) {
+            lineWidth = strokeWidth.getValue();
             if (isDashed) {
-                float[] dashes = {dashWidth};
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND, 10, dashes, 0));
+                float[] dashes = { lineWidth };
+                panel.setCurrentStroke(new BasicStroke(strokeWidth.getValue(),
+                        BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10, dashes, 0));
             } else {
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND));
+                panel.setCurrentStroke(new BasicStroke(strokeWidth.getValue(), 
+                        BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             }
         }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            try {
-                lineWidth = Integer.parseInt(strokeWidth.getText());
-            } catch (NumberFormatException ex) {
-                lineWidth = 1;
-            }
-            if (lineWidth < 1) {
-                lineWidth = 1;
-            }
-            if (isDashed) {
-                float[] dashes = {dashWidth};
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND, 10, dashes, 0));
-            } else {
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND));
-            }
-        }
+        
     }
-
-    private class StrokeDashLengthHandler implements DocumentListener {
+    
+    private class StrokeDashLengthHandler implements ChangeListener {
 
         @Override
-        public void insertUpdate(DocumentEvent e) {
-            try {
-                dashWidth = Integer.parseInt(strokeDashLength.getText());
-            } catch (NumberFormatException ex) {
-                dashWidth = 1;
-            }
+        public void stateChanged(ChangeEvent e) {
+            dashWidth = strokeDashLength.getValue();
             if (isDashed) {
-                if (dashWidth <= 0) {
-                    dashWidth = 1;
-                    strokeDashLength.setText("1");
-                }
-                float[] dashes = {dashWidth};
+                float[] dashes = { dashWidth };
                 panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
                         BasicStroke.JOIN_ROUND, 10, dashes, 0));
             } else {
@@ -512,50 +458,9 @@ public class DrawFrame extends JFrame {
                         BasicStroke.JOIN_ROUND));
             }
         }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            try {
-                dashWidth = Integer.parseInt(strokeDashLength.getText());
-            } catch (NumberFormatException ex) {
-                dashWidth = 1;
-            }
-            if (isDashed) {
-                if (dashWidth <= 0) {
-                    dashWidth = 1;
-                    strokeDashLength.setText("1");
-                }
-                float[] dashes = {dashWidth};
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND, 10, dashes, 0));
-            } else {
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND));
-            }
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            try {
-                dashWidth = Integer.parseInt(strokeDashLength.getText());
-            } catch (NumberFormatException ex) {
-                dashWidth = 1;
-            }
-            if (isDashed) {
-                if (dashWidth <= 0) {
-                    dashWidth = 1;
-                    strokeDashLength.setText("1");
-                }
-                float[] dashes = {dashWidth};
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND, 10, dashes, 0));
-            } else {
-                panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND));
-            }
-        }
+        
     }
-
+    
     private class DashedHandler implements ActionListener {
 
         /**
@@ -569,10 +474,6 @@ public class DrawFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             isDashed = !isDashed;
             if (isDashed) {
-                if (dashWidth <= 0) {
-                    dashWidth = 1;
-                    strokeDashLength.setText("1");
-                }
                 float[] dashes = {dashWidth};
                 panel.setCurrentStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND,
                         BasicStroke.JOIN_ROUND, 10, dashes, 0));

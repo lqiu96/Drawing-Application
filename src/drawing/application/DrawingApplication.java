@@ -28,6 +28,7 @@ public class DrawingApplication {
         frame.setTitle("Drawing Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setSize(800, 800);
         frame.setVisible(true);
     }
 
