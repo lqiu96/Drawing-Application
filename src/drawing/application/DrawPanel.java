@@ -1,7 +1,25 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * The MIT License
+ *
+ * Copyright 2015 Lawrence.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package drawing.application;
 
@@ -37,26 +55,24 @@ import javax.swing.JPanel;
  */
 public class DrawPanel extends JPanel {
 
-    //TODO: Make sure that you can change the size on freeform
     private final ArrayList<MyGraphicsObject> shapes;
     private final ArrayList<MyGraphicsObject> redoShapes;
-    private int shapeType;
     private MyGraphicsObject currentShape;
+    private int shapeType;
     private Paint currentColor;
     private boolean filledShape;
     private final JLabel statusLabel;
     private Stroke currentStroke;
     private String text;
     private boolean eraseSelected;
-    private final int eraserSize = 20;
     private final MyOval eraseCursor;
 
     public DrawPanel(JLabel statusLabel) {
         this.statusLabel = statusLabel;
         shapes = new ArrayList<>(); //No limit on the number of the shapes
         redoShapes = new ArrayList<>();
-        this.shapeType = 0;
         this.currentShape = null;
+        this.shapeType = 0;
         this.currentColor = Color.BLACK;
         this.currentStroke = new BasicStroke();
         this.text = "";
@@ -133,6 +149,11 @@ public class DrawPanel extends JPanel {
         repaint();
     }
 
+   /**
+    * Sets the text to be written on the screen to be the text supplied
+    * 
+    * @param text Text to be displayed
+    */
     public void setText(String text) {
         this.text = text;
     }
@@ -178,14 +199,14 @@ public class DrawPanel extends JPanel {
     /**
      * @return the eraseSelected
      */
-    public boolean isErase() {
+    public boolean isEraserSelected() {
         return eraseSelected;
     }
 
     /**
      * @param erase the eraseSelected to set
      */
-    public void setErase(boolean erase) {
+    public void setEraserSelected(boolean erase) {
         this.eraseSelected = erase;
     }
 
@@ -239,20 +260,22 @@ public class DrawPanel extends JPanel {
                 }
             } else {
                 currentShape = new MyPolyLine();
+                int eraserSize = (int) ((BasicStroke) currentStroke).getLineWidth();
+                eraserSize = eraserSize < 10 ? 10 : eraserSize;
                 //Switching this to setEnd fixes the issue with the eraser drawing from (0,0)
                 //Not sure why, but I believe it has to do with polyline drawing with sometimes no points?
                 ((MyShape) currentShape).setEnd(new Point(e.getX(), e.getY()));
-                ((MyShape) currentShape).setStroke(new BasicStroke(eraserSize, BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND));
+                ((MyShape) currentShape).setStroke(new BasicStroke(
+                        eraserSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
                 ((MyShape) currentShape).setPaint(getBackground());
             }
         }
 
         /**
          * When the user lets go on the panel, adds the shape and count. Sets
-         * the current shape to be null redraws
+         * the current shape to be null and redraws
          *
-         * @param e MouseEvent
+         * @param e MouseEvent object
          */
         @Override
         public void mouseReleased(MouseEvent e) {
@@ -266,6 +289,8 @@ public class DrawPanel extends JPanel {
 
         /**
          * When the mouse is moved, it displays the position on the status label
+         * 
+         * If the eraser is selected, the cursor moves along with the mouse
          *
          * @param e MouseEvent
          */
@@ -274,8 +299,12 @@ public class DrawPanel extends JPanel {
             statusLabel.setText("(" + e.getX() + ", " + e.getY() + ")");
 
             if (eraseSelected) {
-                eraseCursor.setBeginning(new Point(e.getX() - 10, e.getY() - 10));
-                eraseCursor.setEnd(new Point(e.getX() + 10, e.getY() + 10));
+                int eraserSize = (int) ((BasicStroke) currentStroke).getLineWidth();
+                eraserSize = eraserSize < 10 ? 10 : eraserSize;
+                eraseCursor.setBeginning(new Point(e.getX() - eraserSize / 2,
+                        e.getY() - eraserSize / 2));
+                eraseCursor.setEnd(new Point(e.getX() + eraserSize / 2,
+                        e.getY() + eraserSize / 2));
                 repaint();
             }
         }
@@ -284,6 +313,8 @@ public class DrawPanel extends JPanel {
          * When the mouse is dragged on the panel, the current shape (which
          * hasn't been added yet), has its end point constantly changed. It sets
          * the label's text to be the current position redraws the panel
+         * 
+         * If the eraser is selected, it moves the eraser cursor along with it
          *
          * @param e MouseEvent
          */
@@ -296,18 +327,34 @@ public class DrawPanel extends JPanel {
             statusLabel.setText("(" + e.getX() + ", " + e.getY() + ")");
 
             if (eraseSelected) {
-                eraseCursor.setBeginning(new Point(e.getX() - 10, e.getY() - 10));
-                eraseCursor.setEnd(new Point(e.getX() + 10, e.getY() + 10));
+                int eraserSize = (int) ((BasicStroke) currentStroke).getLineWidth();
+                eraserSize = eraserSize < 10 ? 10 : eraserSize;
+                eraseCursor.setBeginning(new Point(e.getX() - eraserSize / 2,
+                        e.getY() - eraserSize / 2));
+                eraseCursor.setEnd(new Point(e.getX() + eraserSize / 2,
+                        e.getY() + eraserSize / 2));
             }
             repaint();
         }
 
+        /**
+         * Sets the eraser cursor to be the default color of Black
+         * 
+         * @param e MouseEvent object
+         */
         @Override
         public void mouseEntered(MouseEvent e) {
             eraseCursor.setPaint(Color.BLACK);
             repaint();
         }
 
+        /**
+         * When the mouse exists the draw panel, the eraser cursor disappears
+         * essentially by making it the same color as the background
+         * //TODO: Error when the there is a drawn Shape at the place the cursor exists
+         * 
+         * @param e MouseEvent object
+         */
         @Override
         public void mouseExited(MouseEvent e) {
             eraseCursor.setPaint(getBackground());
