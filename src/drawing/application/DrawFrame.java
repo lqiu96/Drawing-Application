@@ -63,7 +63,7 @@ public class DrawFrame extends JFrame {
     private final JLabel strokeDashLengthLabel;
     private final JSlider strokeDashLength;
     private final JCheckBox dashed;
-//    private final JButton erase;
+    private final JButton erase;
 
     private final DrawPanel panel;
     private final JLabel statusLabel;
@@ -494,13 +494,11 @@ public class DrawFrame extends JFrame {
             if(!erase.isSelected())
             {
                 erase.setBackground(new Color(170,170,204));
-                //erase.setBorderPainted(true);
-               // erase.setFocusPainted(true);
+
                 erase.setSelected(true);
                 panel.setErase(true);
             }
             else{
-                //erase.setFocusPainted(false);
                 erase.setBackground(null);
                 erase.setSelected(false);
                 panel.setErase(false);
