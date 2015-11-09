@@ -69,8 +69,8 @@ public class DrawPanel extends JPanel {
 
     public DrawPanel(JLabel statusLabel) {
         this.statusLabel = statusLabel;
-        shapes = new ArrayList<>(); //No limit on the number of the shapes
-        redoShapes = new ArrayList<>();
+        this.shapes = new ArrayList<>(); //No limit on the number of the shapes
+        this.redoShapes = new ArrayList<>();
         this.currentShape = null;
         this.shapeType = 0;
         this.currentColor = Color.BLACK;
@@ -142,6 +142,9 @@ public class DrawPanel extends JPanel {
     }
 
     /**
+     * Adds a new MyImage object containing the shape into the panel
+     * starting at the top left corner
+     * 
      * @param image the image to set
      */
     public void setImage(BufferedImage image) {
@@ -149,11 +152,11 @@ public class DrawPanel extends JPanel {
         repaint();
     }
 
-   /**
-    * Sets the text to be written on the screen to be the text supplied
-    * 
-    * @param text Text to be displayed
-    */
+    /**
+     * Sets the text to be written on the screen to be the text supplied
+     *
+     * @param text Text to be displayed
+     */
     public void setText(String text) {
         this.text = text;
     }
@@ -184,7 +187,7 @@ public class DrawPanel extends JPanel {
 
     /**
      * Sets the shape count to be 0 and clears the shapes array by removing it
-     * from the front first repaints the panel
+     * from the front first and adding it into the redo list and repaints the panel
      */
     public void clearDrawing() {
         while (!shapes.isEmpty()) {
@@ -197,6 +200,8 @@ public class DrawPanel extends JPanel {
     }
 
     /**
+     * Gets if the eraser is selected
+     * 
      * @return the eraseSelected
      */
     public boolean isEraserSelected() {
@@ -204,6 +209,8 @@ public class DrawPanel extends JPanel {
     }
 
     /**
+     * Sets if the eraser is selected
+     * 
      * @param erase the eraseSelected to set
      */
     public void setEraserSelected(boolean erase) {
@@ -289,7 +296,7 @@ public class DrawPanel extends JPanel {
 
         /**
          * When the mouse is moved, it displays the position on the status label
-         * 
+         *
          * If the eraser is selected, the cursor moves along with the mouse
          *
          * @param e MouseEvent
@@ -313,7 +320,7 @@ public class DrawPanel extends JPanel {
          * When the mouse is dragged on the panel, the current shape (which
          * hasn't been added yet), has its end point constantly changed. It sets
          * the label's text to be the current position redraws the panel
-         * 
+         *
          * If the eraser is selected, it moves the eraser cursor along with it
          *
          * @param e MouseEvent
@@ -339,7 +346,7 @@ public class DrawPanel extends JPanel {
 
         /**
          * Sets the eraser cursor to be the default color of Black
-         * 
+         *
          * @param e MouseEvent object
          */
         @Override
@@ -350,9 +357,9 @@ public class DrawPanel extends JPanel {
 
         /**
          * When the mouse exists the draw panel, the eraser cursor disappears
-         * essentially by making it the same color as the background
-         * //TODO: Error when the there is a drawn Shape at the place the cursor exists
-         * 
+         * essentially by making it the same color as the background //TODO:
+         * Error when the there is a drawn Shape at the place the cursor exists
+         *
          * @param e MouseEvent object
          */
         @Override

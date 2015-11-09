@@ -60,7 +60,7 @@ public abstract class MyShape implements MyGraphicsObject {
 
     /**
      * Gets the beginning point of the shape
-     * 
+     *
      * @return Beginning Point
      */
     public Point getBeginning() {

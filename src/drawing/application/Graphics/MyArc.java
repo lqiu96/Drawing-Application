@@ -43,9 +43,9 @@ public class MyArc extends MyBoundedShape {
     }
 
     /**
-     * Essentially draws the arc from Point 1 to Point 2 (Beginning to End)
-     * and determines the angle from and to (If flat, it should just be 0 - 180)
-     * 
+     * Essentially draws the arc from Point 1 to Point 2 (Beginning to End) and
+     * determines the angle from and to (If flat, it should just be 0 - 180)
+     *
      * @param g Graphics2D object
      */
     @Override

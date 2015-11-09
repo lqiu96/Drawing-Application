@@ -26,12 +26,11 @@ package drawing.application.Graphics;
 import java.awt.Graphics2D;
 
 /**
- * The shape hierarchy is split into 3 ways- Images, Text, and Shapes
- * Under Shapes, there are Lines, PolyLines, and Bounded Shapes.
- *  -Each shape has a stroke and gradient
- * Under Bounded Shapes, there are Ovals, Rectangles, and Arcs
- *  -Each bounded shape has a filled option
- * 
+ * The shape hierarchy is split into 3 ways- Images, Text, and Shapes Under
+ * Shapes, there are Lines, PolyLines, and Bounded Shapes. -Each shape has a
+ * stroke and gradient Under Bounded Shapes, there are Ovals, Rectangles, and
+ * Arcs -Each bounded shape has a filled option
+ *
  * @author Lawrence and Nate
  */
 public interface MyGraphicsObject {

@@ -47,7 +47,7 @@ public class MyImage implements MyGraphicsObject {
 
     /**
      * Draws the image from the points supplied
-     * 
+     *
      * @param g Graphics2D object
      */
     @Override

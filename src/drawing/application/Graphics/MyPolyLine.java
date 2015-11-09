@@ -70,8 +70,8 @@ public class MyPolyLine extends MyShape {
     }
 
     /**
-     * Adds the new end point into the Array List of values
-     * every time repaint() is called - Moved, Dragged, etc.
+     * Adds the new end point into the Array List of values every time repaint()
+     * is called - Moved, Dragged, etc.
      */
     private void addEndCoordinate() {
         xValues.add(getEnd().x);

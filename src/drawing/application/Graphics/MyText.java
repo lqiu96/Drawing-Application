@@ -40,7 +40,7 @@ public class MyText implements MyGraphicsObject {
 
     /**
      * Constructor for the MyText object
-     * 
+     *
      * @param text Text to be displayed
      * @param x xPosition of the text
      * @param y yPosition of the text
